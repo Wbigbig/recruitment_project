@@ -1,0 +1,191 @@
+{% extends 'tmpl_basic1.html' %}
+
+{% block my_css %}
+<link href="/bootstrap-3.3.5-dist/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block my_js %}
+<script src="/bootstrap-3.3.5-dist/js/bootstrap-datetimepicker.min.js"></script>
+<script	src="/bootstrap-3.3.5-dist/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+<script>
+//上一次查询的年龄值，需要在脚本初始化时候设置
+var age_min = '{{dm.age_min}}';
+var age_max = '{{dm.age_max}}';
+
+jqu.loadJs('/js/tnews.js');
+</script>
+{% endblock %}
+
+
+{% block my_body %}
+<nav class="navbar navbar-default" role="navigation">
+	 <div class="container-fluid">
+	 <div class="navbar-header">
+		 <a class="navbar-brand" href="/">选课系统</a>
+	 </div>
+	 <div>
+		 <ul class="nav navbar-nav">
+			 <li><a href="{{url_for('news.list')}}">事务通知</a></li>
+			 <li class="active"><a href="{{url_for('stu.list')}}">学生信息</a></li>
+			 <li><a href="{{url_for('course.list')}}">课程信息</a></li>
+			 <li><a href="#">学生选课</a></li>
+
+		 </ul>
+	 </div>
+	 </div>
+ </nav>
+
+
+
+  <div class="container" style="width:95%;">
+   <div class="row">
+    <div class="col-sm-12">
+     <!-- 查询表单 -->
+     <form id="form_search" class="form-inline" role="form" method="post" action="{{url_for('stu.list')}}">
+
+      <div class="form-group">
+       <label>姓名关键字：</label>
+       <input type="text" class="form-control" name="kw" style="width: 120px;" placeholder="请输入关键字" value="{{dm.kw}}" />
+      </div>
+
+	  <div class="form-group">
+				<label>年龄：</label> <input type="text"
+					class="form-control" name="age_min" value=""
+					style="width: 120px;" placeholder="选择最小年龄">
+	</div>
+	<div class="form-group">
+		<label>~</label> <input type="text"
+					class="form-control" name="age_max" value="" style="width: 120px;"
+					placeholder="选择最大年龄" >
+	</div>
+
+      <button type="button" class="btn btn-default" onclick="search()"><i class="fa fa-search"></i> 查询</button>
+      <button type="button" class="btn btn-primary" onclick="presave(0,'stu')"><i class="fa fa-plus"></i> 新增</button>
+
+      <input type="hidden" name="page" value="{{dm.page}}" />
+      <input type="hidden" name="pagesize" value="{{dm.pagesize}}" />
+     </form>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-sm-12">
+      {% if dm.total>0 %}
+     <!-- 数据显示表格 -->
+     <table class="table table-striped">
+      <caption>
+       学生数据。第 {{dm.page}} / {{dm.totalpage}} 页，共 {{dm.total}} 条。
+      </caption>
+      <thead>
+       <tr>
+        <th>学号</th>
+        <th>姓名</th>
+        <th>生日</th>
+        <th>年龄</th>
+        <th>学院</th>
+        <th>班级</th>
+		<th width="150">操作</th>
+       </tr>
+      </thead>
+      <tbody>
+        {% for row in dm.rows %}
+       <tr>
+        <td>{{row.code}}</td>
+        <td>{{row.name}}</td>
+        <td>{{row.birthday}}</td>
+        <td>{{row.age}}</td>
+        <td>{{row.institute}}</td>
+        <td>{{row.fclass}}</td>
+        <td>
+			<a href="javascript:;" onclick="presave({{row.id}}, 'stu')"><i class="fa fa-edit"></i> 修改</a>
+			&nbsp;
+			<a href="javascript:;" onclick="remove({{row.id}}, 'stu')"><i class="fa fa-remove"></i> 删除</a>
+
+		</td>
+       </tr>
+	   {% endfor %}
+      </tbody>
+     </table>
+     <!-- 翻页，靠右，必须有页码的时候 -->
+     <ul class="pagination">
+	    <li><a href="javascript:;" onclick="changePage(1)" data-toggle="tooltip" title="首页">&laquo;</a></li>
+		{% for pageno in dm.pagenumbers %}
+	    <li {% if pageno==dm.page %} class="active" {% endif %}><a href="javascript:;" onclick="changePage({{pageno}})">{{pageno}}</a></li>
+	    {% endfor %}
+	    <li><a href="javascript:;" onclick="changePage({{dm.totalpage}})" data-toggle="tooltip" title="末页 共 {{dm.totalpage}} 页">&raquo;</a></li>
+	</ul>
+
+
+
+
+	 {% else %}
+     <h3>查询无结果.</h3>
+
+	 {% endif %}
+    </div>
+   </div>
+
+
+  </div> <!-- container 结束 -->
+
+
+  <!-- 模态框（Modal）新增/修改新闻 -->
+  <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-hidden="true">
+	  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				  <h4 class="modal-title" >新增/修改 学生数据</h4>
+			  </div>
+			  <div class="modal-body">
+
+				  <form role="form" id="form_am">
+
+                    <div class="form-group">
+					  <label>学号</label>
+					  <input type="text" class="form-control" name="code" placeholder="请输入学号">
+					</div>
+
+					<div class="form-group">
+					  <label>姓名</label>
+					  <input type="text" class="form-control" name="name" placeholder="请输入姓名">
+					</div>
+
+					<div class="form-group">
+					  <label>生日</label>
+					  <input type="text" class="form-control" name="birthday" placeholder="请输入生日">
+					</div>
+
+					<div class="form-group">
+					  <label>年龄</label>
+					  <input type="text" class="form-control" name="age" placeholder="请输入年龄">
+					</div>
+
+					<div class="form-group">
+					  <label>学院</label>
+					  <input type="text" class="form-control" name="institute" placeholder="请输入学院">
+					</div>
+
+                    <div class="form-group">
+					  <label>班级</label>
+					  <input type="text" class="form-control" name="fclass" placeholder="请输入班级">
+					</div>
+
+					<input type="hidden" name="id" value="0" />
+
+
+				  </form>
+
+
+			  </div>
+			  <div class="modal-footer">
+				  <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				  <button type="button" class="btn btn-primary" onclick="save('stu')">提交</button>
+			  </div>
+		  </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+{% endblock %}
+
+

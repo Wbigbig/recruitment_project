@@ -1,0 +1,163 @@
+{% extends 'tmpl_basic1.html' %}
+
+{% block my_css %}
+<link href="/bootstrap-3.3.5-dist/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block my_js %}
+<script src="/bootstrap-3.3.5-dist/js/bootstrap-datetimepicker.min.js"></script>
+<script	src="/bootstrap-3.3.5-dist/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+<script>
+
+jqu.loadJs('/js/tnews.js');
+</script>
+{% endblock %}
+
+
+{% block my_body %}
+<nav class="navbar navbar-default" role="navigation">
+	 <div class="container-fluid">
+	 <div class="navbar-header">
+		 <a class="navbar-brand" href="/">选课系统</a>
+	 </div>
+	 <div>
+		 <ul class="nav navbar-nav">
+			 <li><a href="{{url_for('news.list')}}">事务通知</a></li>
+			 <li><a href="{{url_for('stu.list')}}">学生信息</a></li>
+			 <li class="active"><a href="{{url_for('course.list')}}">课程信息</a></li>
+			 <li><a href="#">学生选课</a></li>
+
+		 </ul>
+	 </div>
+	 </div>
+ </nav>
+
+
+
+  <div class="container" style="width:95%;">
+   <div class="row">
+    <div class="col-sm-12">
+     <!-- 查询表单 -->
+     <form id="form_search" class="form-inline" role="form" method="post" action="{{url_for('course.list')}}">
+
+      <div class="form-group">
+       <label>课程关键字：</label>
+       <input type="text" class="form-control" name="kw" style="width: 120px;" placeholder="请输入关键字" value="{{dm.kw}}" />
+      </div>
+
+      <button type="button" class="btn btn-default" onclick="search()"><i class="fa fa-search"></i> 查询</button>
+      <button type="button" class="btn btn-primary" onclick="presave(0,'course')"><i class="fa fa-plus"></i> 新增</button>
+
+      <input type="hidden" name="page" value="{{dm.page}}" />
+      <input type="hidden" name="pagesize" value="{{dm.pagesize}}" />
+     </form>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-sm-12">
+      {% if dm.total>0 %}
+     <!-- 数据显示表格 -->
+     <table class="table table-striped">
+      <caption>
+       课程信息。第 {{dm.page}} / {{dm.totalpage}} 页，共 {{dm.total}} 条。
+      </caption>
+      <thead>
+       <tr>
+        <th>课程编号</th>
+        <th>课程名称</th>
+        <th>学分</th>
+        <th>开课学院</th>
+		<th width="150">操作</th>
+       </tr>
+      </thead>
+      <tbody>
+        {% for row in dm.rows %}
+       <tr>
+        <td>{{row.code}}</td>
+        <td>{{row.name}}</td>
+        <td>{{row.score}}</td>
+        <td>{{row.institute}}</td>
+        <td>
+			<a href="javascript:;" onclick="presave({{row.id}}, 'course')"><i class="fa fa-edit"></i> 修改</a>
+			&nbsp;
+			<a href="javascript:;" onclick="remove({{row.id}}, 'course')"><i class="fa fa-remove"></i> 删除</a>
+
+		</td>
+       </tr>
+	   {% endfor %}
+      </tbody>
+     </table>
+     <!-- 翻页，靠右，必须有页码的时候 -->
+     <ul class="pagination">
+	    <li><a href="javascript:;" onclick="changePage(1)" data-toggle="tooltip" title="首页">&laquo;</a></li>
+		{% for pageno in dm.pagenumbers %}
+	    <li {% if pageno==dm.page %} class="active" {% endif %}><a href="javascript:;" onclick="changePage({{pageno}})">{{pageno}}</a></li>
+	    {% endfor %}
+	    <li><a href="javascript:;" onclick="changePage({{dm.totalpage}})" data-toggle="tooltip" title="末页 共 {{dm.totalpage}} 页">&raquo;</a></li>
+	</ul>
+
+
+
+
+	 {% else %}
+     <h3>查询无结果.</h3>
+
+	 {% endif %}
+    </div>
+   </div>
+
+
+  </div> <!-- container 结束 -->
+
+
+  <!-- 模态框（Modal）新增/修改新闻 -->
+  <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-hidden="true">
+	  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				  <h4 class="modal-title" >新增/修改 课程信息</h4>
+			  </div>
+			  <div class="modal-body">
+
+				  <form role="form" id="form_am">
+
+                    <div class="form-group">
+					  <label>课程编号</label>
+					  <input type="text" class="form-control" name="code" placeholder="请输入课程编号">
+					</div>
+
+					<div class="form-group">
+					  <label>课程名称</label>
+					  <input type="text" class="form-control" name="name" placeholder="请输入课程名称">
+					</div>
+
+					<div class="form-group">
+					  <label>学分</label>
+					  <input type="text" class="form-control" name="score" placeholder="请输入课程学分">
+					</div>
+
+					<div class="form-group">
+					  <label>开课学院</label>
+					  <input type="text" class="form-control" name="institute" placeholder="请输入开课学院">
+					</div>
+
+					<input type="hidden" name="id" value="0" />
+
+
+				  </form>
+
+
+			  </div>
+			  <div class="modal-footer">
+				  <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				  <button type="button" class="btn btn-primary" onclick="save('course')">提交</button>
+			  </div>
+		  </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+{% endblock %}
+
+

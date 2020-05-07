@@ -1,0 +1,30 @@
+{# 继承 tmpl_basic1.html 基本模板 #}
+{% extends 'tmpl_basic1.html' %}
+
+{% block my_body %}
+
+<nav class="navbar navbar-default" role="navigation">
+	 <div class="container-fluid">
+	 <div class="navbar-header">
+		 <a class="navbar-brand" href="/">选课系统</a>
+	 </div>
+	 <div>
+		 <ul class="nav navbar-nav">
+			 <li><a href="{{url_for('news.list')}}">事务通知</a></li>
+			 <li><a href="{{url_for('stu.list')}}">学生信息</a></li>
+			 <li><a href="{{url_for('course.list')}}">课程信息</a></li>
+			 <li><a href="#">学生选课</a></li>
+			 
+		 </ul>
+	 </div>
+	 </div>
+ </nav>
+
+
+{#<h1>主页</h1>#}
+
+<h1 id="start" style="height: 50px; width: 100%; text-align: center; margin-top: 16%" /></h1>
+<h1 id="say_hello" style="height: 50px; width: 100%; text-align: center" /></h1>
+
+
+{% endblock %}
