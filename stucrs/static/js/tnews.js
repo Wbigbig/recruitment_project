@@ -4,6 +4,9 @@ var search = function(){
 	$('#form_search').get(0).submit();
 };
 
+//导航栏切换
+$('.nav li:eq(0)').addClass("active");
+
 //翻页栏切换
 var changePage = function(page){
 	//找到当前页

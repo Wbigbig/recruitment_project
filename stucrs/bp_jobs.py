@@ -8,10 +8,10 @@ from flask import Blueprint,request,render_template
 from .project_utils import get_db_path,datestr_to_timestamp,to_json
 import sqlite3
 
-news = Blueprint('news',__name__)
+jobs = Blueprint('jobs',__name__)
 
 # 显示数据库表 ztest 中的记录
-@news.route('/list',methods=['GET','POST'])
+@jobs.route('/list',methods=['GET','POST'])
 def list():
 	if request.method=='POST':
 		fclass = request.form.get('fclass') if ('fclass' in request.form) else ''
@@ -174,7 +174,7 @@ def list():
 	return render_template('tnews_list.html',dm=dm)
 	
 # 增加修改前，获得数据内容
-@news.route('/presave',methods=['POST'])
+@jobs.route('/presave',methods=['POST'])
 def presave():
 	# 数据库记录的id号，>0表示修改
 	id = request.form.get('id') if ('id' in request.form) else ''
@@ -217,7 +217,7 @@ def presave():
 	return to_json(succ=True,record=record)
 	
 # 保存数据库
-@news.route('/save',methods=['POST'])
+@jobs.route('/save',methods=['POST'])
 def save():
 	id = request.form.get('id') if ('id' in request.form) else ''
 	fclass = request.form.get('fclass') if ('fclass' in request.form) else ''
@@ -261,7 +261,7 @@ def save():
 	return to_json(succ=True)
 	
 # 删除
-@news.route('/remove',methods=['POST'])
+@jobs.route('/remove',methods=['POST'])
 def remove():
 	id = request.form.get('id') if ('id' in request.form) else ''
 	
@@ -285,7 +285,7 @@ def remove():
 	return to_json(succ=True)
 	
 # 新闻的详情页面
-@news.route('/detail')
+@jobs.route('/detail')
 def detail():
 	id = request.args.get('id') if ('id' in request.args) else ''
 	try:

@@ -8,9 +8,9 @@ from flask import Blueprint,request,render_template
 from .project_utils import get_db_path,datestr_to_timestamp,to_json
 import sqlite3
 
-course = Blueprint('course',__name__)
+iuser = Blueprint('iuser',__name__)
 
-@course.route('/list',methods=['GET','POST'])
+@iuser.route('/list',methods=['GET','POST'])
 def list():
 	if request.method=='POST':
 		kw = request.form.get('kw', '')
@@ -125,7 +125,7 @@ def list():
 
 
 # 增加修改前，获得数据内容
-@course.route('/presave', methods=['POST'])
+@iuser.route('/presave', methods=['POST'])
 def presave():
 	# 数据库记录的id号，>0表示修改
 	id = request.form.get('id', '')
@@ -165,7 +165,7 @@ def presave():
 
 
 # 保存数据库
-@course.route('/save', methods=['POST'])
+@iuser.route('/save', methods=['POST'])
 def save():
 	id = request.form.get('id', '')
 	code = request.form.get('code', '')
@@ -204,7 +204,7 @@ def save():
 
 
 # 删除
-@course.route('/remove', methods=['POST'])
+@iuser.route('/remove', methods=['POST'])
 def remove():
 	id = request.form.get('id', '')
 

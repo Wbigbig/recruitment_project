@@ -9,9 +9,9 @@ from flask import Flask,request,render_template
 from .project_utils import get_db_path,get_project_dir,datestr_to_timestamp,to_json
 
 from .bp_main import main
-from .bp_student import stu
-from .bp_news import news
-from .bp_course import course
+from .bp_jobs import jobs
+from .bp_companys import companys
+from .bp_user import iuser
 
 # 项目的配置信息
 project_config = {}
@@ -43,9 +43,9 @@ def create_app():
 	
 	# 配置蓝图
 	app.register_blueprint(blueprint=main)
-	app.register_blueprint(blueprint=stu,url_prefix='/stu')
-	app.register_blueprint(blueprint=news,url_prefix='/news')
-	app.register_blueprint(blueprint=course, url_prefix='/course')
+	app.register_blueprint(blueprint=jobs,url_prefix='/jobs')
+	app.register_blueprint(blueprint=companys,url_prefix='/companys')
+	app.register_blueprint(blueprint=iuser, url_prefix='/iuser')
 	
 	
 	# 执行项目初始化方法

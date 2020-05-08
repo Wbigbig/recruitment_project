@@ -19,30 +19,12 @@ jqu.loadJs('/js/tnews.js');
 
 
 {% block my_body %}
-<nav class="navbar navbar-default" role="navigation">
-	 <div class="container-fluid">
-	 <div class="navbar-header">
-		 <a class="navbar-brand" href="/">选课系统</a>
-	 </div>
-	 <div>
-		 <ul class="nav navbar-nav">
-			 <li class="active"><a href="#">事务通知</a></li>
-			 <li><a href="{{url_for('stu.list')}}">学生信息</a></li>
-			 <li><a href="{{url_for('course.list')}}">课程信息</a></li>
-			 <li><a href="#">学生选课</a></li>
-			 
-		 </ul>
-	 </div>
-	 </div>
- </nav>
- 
- 
- 
+
   <div class="container" style="width:95%;"> 
    <div class="row"> 
     <div class="col-sm-12"> 
      <!-- 查询表单 --> 
-     <form id="form_search" class="form-inline" role="form" method="post" action="{{url_for('news.list')}}"> 
+     <form id="form_search" class="form-inline" role="form" method="post" action="{{url_for('jobs.list')}}">
 	 
 	  <div class="form-group"> 
        <label>栏目：</label> 
@@ -99,7 +81,7 @@ jqu.loadJs('/js/tnews.js');
       <tbody>
         {% for row in dm.rows %} 
        <tr> 
-        <td><a href="{{url_for('news.detail',id=row.id)}}" target="_blank">{{row.title}}</a></td> 
+        <td><a href="{{url_for('jobs.detail',id=row.id)}}" target="_blank">{{row.title}}</a></td>
         <td>{{row.fdate}}</td> 
         <td>{{row.fclass}}</td> 
         <td>{{row.clickrate}}</td> 
