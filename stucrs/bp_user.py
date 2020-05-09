@@ -10,6 +10,12 @@ import sqlite3
 
 iuser = Blueprint('iuser',__name__)
 
+@iuser.route('/login/', methods=['POST'])
+def login():
+	# 获取登录信息
+	login_param = request.get_json()
+
+
 @iuser.route('/list',methods=['GET','POST'])
 def list():
 	if request.method=='POST':

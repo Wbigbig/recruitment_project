@@ -8,11 +8,11 @@
 """
 数据库连接、表模型创建
 """
-
-from sqlalchemy import create_engine
+import datetime
+from sqlalchemy import create_engine, or_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 
 # 创建引擎
 conn_str = "mysql+pymysql://{user}:{pwd}@localhost:3306/{db_name}?charset=utf8mb4"
@@ -49,6 +49,7 @@ class Applicant(Base):
     personal_experience = Column(Text)
     educational_experience = Column(Text)
     head_pic = Column(Text)
+    create_time = Column(DateTime, default=datetime.datetime.now)
 
 # 应聘者工作经历表
 class WorkExperience(Base):
@@ -62,6 +63,7 @@ class WorkExperience(Base):
     job_title = Column(String(50))
     department = Column(String(50))
     job_content = Column(Text)
+    create_time = Column(DateTime, default=datetime.datetime.now)
 
     # 与生成表结构无关，仅用于查询方便
     applicant = relationship("Applicant", backref="wes")
@@ -79,6 +81,7 @@ class RecruiterCompany(Base):
     legal_representative = Column(String(50))
     company_profile = Column(Text)
     company_pic = Column(Text)
+    create_time = Column(DateTime, default=datetime.datetime.now)
 
 # 企业招聘者HR
 class RecruiterHr(Base):
@@ -91,6 +94,7 @@ class RecruiterHr(Base):
     password = Column(String(50))
     email = Column(String(50), unique=True)
     head_pic = Column(Text)
+    create_time = Column(DateTime, default=datetime.datetime.now)
 
     # 与生成表结构无关，仅用于查询方便
     recruiter_company = relationship("RecruiterCompany", backref="rec_hrs")
@@ -108,6 +112,7 @@ class RecruitmentPosition(Base):
     education_requirements = Column(String(50))
     salary_range = Column(String(50))
     job_description = Column(Text)
+    create_time = Column(DateTime, default=datetime.datetime.now)
 
 # 投递记录表
 class DeliveryRecord(Base):
@@ -117,7 +122,7 @@ class DeliveryRecord(Base):
     company_id = Column(Integer, ForeignKey("recruiter_company.company_id"), index=True)
     job_id = Column(Integer, ForeignKey("recruitment_position.job_id"), index=True)
     hr_id = Column(Integer, ForeignKey("recruiter_hr.hr_id"), index=True)
-    delivery_time = Column(Integer)
+    delivery_time = Column(DateTime, default=datetime.datetime.now)
 
     # 与生成表结构无关，仅用于查询方便
     # 与应聘者的正反向查询
@@ -147,7 +152,7 @@ def drop_db_one(model):
     model.__table__.drop(ENGINE)
     print("删除完成")
 
-# create_db()
+
 # drop_db_one(Applicant)
 # drop_db()
-
+# create_db()

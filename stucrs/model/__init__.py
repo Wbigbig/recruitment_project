@@ -7,6 +7,7 @@
 增删改查，执行数据操作
 """
 
+from flask_login import UserMixin
 from .model_table import *
 
 # 用户注册操作
@@ -16,15 +17,36 @@ def create_applicant_user(u_info):
     session.close()
     print("applicant_add", u_info)
 
-u_info = {
-    "user_name": "开朝元老",
-    "phone": "00000000000",
-    "password": "11111111111"
-}
+class User(UserMixin):
+    def __init__(self, login_param):
+        self.user_id = None
+        self.user_name = None
+        self.phone = login_param.get("acc")
+        self.password = login_param.get("password")
+        self.email = login_param.get("acc")
+        self.industry = None
+        self.real_name = None
+        self.birthday = None
+        self.age = None
+        self.city = None
+        self.current_identity = None
+        self.personal_experience = None
+        self.educational_experience = None
+        self.head_pic = None
+        self.create_time = None
 
-create_applicant_user(u_info)
+    # 验证账号密码
+    def verify_password(self):
+        pwd_hs = self.get_password_hash()
 
-
-
-
-
+    def get_password_hash(self):
+        """
+        尝试从数据库获取密码
+        :return: 返回None则无对应用户
+        """
+        try:
+            user_ret = session.query(Applicant).filter(or_(Applicant.phone == self.phone, Applicant.email == self.email)).first()
+            if not user_ret: return
+            return user_ret
+        except:
+            pass
