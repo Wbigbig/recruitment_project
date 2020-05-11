@@ -1,0 +1,55 @@
+{# 继承 tmpl_basic1.html 基本模板 #}
+{% extends 'tmpl_basic1.html' %}
+
+{% block my_css %}
+<link rel='stylesheet' href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css'>
+<link rel='stylesheet' href='/css/login.css'>
+{% endblock %}
+
+{% block my_js %}
+<script src="/bootstrap-3.3.5-dist/js/bootstrap-datetimepicker.min.js"></script>
+<script	src="/bootstrap-3.3.5-dist/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script>
+jqu.loadJs('/js/login.js');
+</script>
+{% endblock %}
+
+{% block my_body %}
+
+<div class="form-bg" style="padding: 20px 0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-3 col-md-6">
+                <form class="form-horizontal">
+                    <span class="heading">用户登录</span>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="inputEmail3" placeholder="手机号或电子邮件">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="form-group help">
+                        <input type="password" class="form-control" id="inputPassword3" placeholder="密　码">
+                        <i class="fa fa-lock"></i>
+                        <a href="#" class="fa fa-question-circle"></a>
+                    </div>
+                    <div class="form-group">
+                        <div class="main-checkbox">
+                            <input type="radio" value="0" id="checkbox1" name="check"/>
+                            <label for="checkbox1"></label>
+                        </div>
+                        <span class="text">找工作</span>
+                        <div class="main-checkbox">
+                            <input type="radio" value="1" id="checkbox2" name="check"/>
+                            <label for="checkbox2"></label>
+                        </div>
+                        <span class="text">找人才</span>
+                        <button type="button" id="main-login" class="btn btn-default">登录</button>
+                    </div>
+                    <div class="form-group" style="margin: -25px 0 0 0;">
+                        <span class="text" style="color:#aaa;">没有账号?<a href="{{ url_for('iuser.register') }}">&nbsp;注册</a></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

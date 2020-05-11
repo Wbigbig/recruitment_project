@@ -29,12 +29,12 @@ def make_dict(*args,**kwargs):
 				#如果匿名类型为一般类型，则建立新的字典熟悉，名称为：anom_arg_0
 				rst['anom_arg_'+str(anom_arg_idx)] = item
 				anom_arg_idx += 1
-				
+
 	if len(kwargs)>0:
 		rst.update(kwargs)
-	
+
 	return rst
-	
+
 #产生json跨域的json返回
 def to_json_cors(*args,**kwargs):
 	rst = make_dict(*args,**kwargs)
@@ -46,13 +46,13 @@ def to_json_cors(*args,**kwargs):
 	resp.headers['Access-Control-Allow-Methods'] = 'GET,POST,OPTIONS'
 	resp.headers['Access-Control-Allow-Credentials'] = 'true'
 	resp.headers['Access-Control-Allow-Headers'] = 'Origin,X-Requested-With,Content-Type,Accept'
-	
+
 	return resp
-	
+
 #直接用jsonify返回一个json，只有本系统中可以用
 def to_json(*args,**kwargs):
 	return jsonify(make_dict(*args,**kwargs))
-	
+
 #字符形式的日期转成时间戳
 def datestr_to_timestamp(datestr,**kwargs):
 	#日期格式的默认值
@@ -62,7 +62,7 @@ def datestr_to_timestamp(datestr,**kwargs):
 	ts = int(time.mktime(time.strptime(datestr, fmt)))
 	return ts
 
-	
+
 #时间戳转成日期字符串
 def timestamp_to_datestr(timestamp,**kwargs):
 	fmt = '%Y-%m-%d %H:%M:%S'
@@ -70,11 +70,11 @@ def timestamp_to_datestr(timestamp,**kwargs):
 		fmt = kwargs['format']
 	dt = time.strftime(fmt, time.localtime(timestamp))
 	return dt
-	
+
 #获得当前的时间戳，单位秒
 def now_timestamp():
 	return (int)(time.time())
-	
+
 # 字符串的MD5加密，一般用于密码的保存
 def md5_encode(plaintext):
 	#加密的明文必须是字符串或者字节数组
@@ -84,14 +84,14 @@ def md5_encode(plaintext):
 		data = plaintext
 	else:
 		return 'plaintext must be str or bytes'
-		
+
 	#获得md5算法对象
 	md5 = hashlib.md5()
 	#执行加密动作，明文需要首先转成字节数组才能进行加密
 	md5.update(data)
 	#以16进制字符形式得到加密后的字符串，称之为 密文
 	return md5.hexdigest()
-	
+
 # base64 加密，加密对象为字节数组
 def base64_encode(plaintext):
 	#加密的明文必须是字符串或者字节数组
@@ -101,10 +101,10 @@ def base64_encode(plaintext):
 		data = plaintext
 	else:
 		return 'plaintext must be str or bytes'
-		
+
 	data_base64 = base64.b64encode(data)
 	return data_base64.decode('utf-8')
-	
+
 # base64 解密，解密对象必须是字符串或者字节数组
 def base64_decode(ciphertext):
 	if type(ciphertext)==type(''):
@@ -113,10 +113,10 @@ def base64_decode(ciphertext):
 		data_base64 = ciphertext
 	else:
 		return 'ciphertext must be str or bytes'
-		
+
 	data = base64.b64decode(data_base64)
 	return data.decode('utf-8')
-	
+
 # 产生验证码，4位，大写
 def gnr_check_code():
 	chars = '23456789abcdefghjkmnpqrstuvwxyz';
@@ -125,9 +125,9 @@ def gnr_check_code():
 	ls = []
 	for i in range(4):
 		ls.append(chars[random.randint(0,lt-1)])
-		
+
 	return ''.join(ls).upper()
-	
+
 # 获得项目的所在文件夹路径，作为其它资源的根目录
 cur_project_path = None
 def get_project_dir():
@@ -136,36 +136,42 @@ def get_project_dir():
 	# 项目路径只需要获得一次即可
 	if cur_project_path is not None:
 		return cur_project_path
-		
+
 	cur_project_path = os.path.dirname(os.path.abspath(__file__))
 	if cur_project_path.find('\\')!=-1:
 		cur_project_path = cur_project_path.replace('\\','/')
-	
+
 	return cur_project_path
-	
-	
+
+
 # 获得数据库db文件的路径
 def get_db_path():
 	return get_project_dir()+'/my.db'
-	
+
+# 自定义返回字典
+def dRet(status, msg_data):
+	return {
+		200: {"status": 200, "data": msg_data},
+		500: {"status": 500, "msg": msg_data}
+	 }.get(status)
+
 
 #作为主模块时候的执行，一般测试函数使用
 if __name__ == '__main__':
 	# plaintext = '你好啊'
 	# print('明文：',plaintext)
-	
+
 	# ciphertext = base64_encode(plaintext)
 	# print('base64 加密：',ciphertext)
 	# str = base64_decode(ciphertext)
 	# print('base64 解密：',str)
-	
+
 	# print('md5 加密：',md5_encode(plaintext))
-	
-	
+
+
 	print(gnr_check_code())
 	print(get_project_dir())
-	
-	
-	
-	
-	
+
+
+
+

@@ -2,21 +2,57 @@
 # -*- coding: utf-8 -*-
 # Author   :
 
-# 课程信息蓝图，构建在：/course
+# 用户信息接口蓝图，构建在：/iuser
 
-from flask import Blueprint,request,render_template
-from .project_utils import get_db_path,datestr_to_timestamp,to_json
+from flask import Blueprint,request,render_template,redirect,url_for
+from flask_login import login_user,logout_user,login_required
+
+from .project_utils import get_db_path,datestr_to_timestamp,to_json,dRet
+from .model import User
 import sqlite3
 
 iuser = Blueprint('iuser',__name__)
 
-@iuser.route('/login/', methods=['POST'])
+@iuser.route('/login/', methods=['POST','GET'])
 def login():
 	# 获取登录信息
 	login_param = request.get_json()
+	print(login_param)
+	if login_param:
+		lg_user = User(login_param)
+		if lg_user.verify_password():
+			print("存储用户登录状态", lg_user.user_name, lg_user.phone, lg_user.email)
+			login_user(lg_user, remember=True)
+			return dRet(200, "成功")
+		return dRet(500, "账号或密码错误")
+	return render_template('login.html')
 
+@iuser.route('/register/', methods=['POST','GET'])
+def register():
+	# 注册账号
+	register_param = request.get_json()
+	print(register_param)
+	if register_param:
+		rg_user = User.create_user(register_param)
+		return rg_user
+	return render_template('register.html')
+
+@iuser.route('/logout/', methods=['POST'])
+def logout():
+	# 注销账号
+	logout_user()
+	# return redirect(url_for('login'))
+	return dRet(200, "成功")
+
+
+@iuser.route('/verifyLogin/', methods=['POST'])
+@login_required
+def verify_login():
+	# 测试登录状态是否成功
+	return dRet(200, "维持登录中")
 
 @iuser.route('/list',methods=['GET','POST'])
+@login_required
 def list():
 	if request.method=='POST':
 		kw = request.form.get('kw', '')
@@ -127,7 +163,7 @@ def list():
 	print(dm)
 
 
-	return render_template('course_list.html', dm=dm)
+	return render_template('login.html', dm=dm)
 
 
 # 增加修改前，获得数据内容
