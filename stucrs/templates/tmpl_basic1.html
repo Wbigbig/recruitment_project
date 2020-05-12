@@ -19,16 +19,19 @@
 
 <nav class="navbar navbar-default" role="navigation">
 	 <div class="container-fluid">
-	 <div class="navbar-header">
-		 <a class="navbar-brand" href="/">招聘网</a>
-	 </div>
-	 <div>
-		 <ul class="nav navbar-nav">
-			 <li><a href="{{url_for('jobs.list')}}">职位搜索</a></li>
-			 <li><a href="{{url_for('companys.list')}}">公司</a></li>
-			 <li><a href="{{url_for('iuser.list')}}">个人中心</a></li>
-		 </ul>
-	 </div>
+         <div class="navbar-header">
+             <a class="navbar-brand" href="/">招聘网</a>
+         </div>
+         <div>
+             <ul class="nav navbar-nav">
+                 <li><a href="{{url_for('jobs.list')}}">职位搜索</a></li>
+                 <li><a href="{{url_for('companys.list')}}">公司</a></li>
+                 <li><a href="{{url_for('iuser.main')}}">个人中心</a></li>
+             </ul>
+         </div>
+         <div class="navbar-header" style="float: right;">
+             <a class="navbar-brand" href="{{ url_for('iuser.logout') }}">登出</a>
+         </div>
 	 </div>
  </nav>
 

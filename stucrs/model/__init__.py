@@ -20,7 +20,7 @@ def create_applicant_user(u_info):
         session.commit()
         session.close()
         print("applicant_add", u_info)
-        return dRet(200, "注册成功")
+        return dRet(200, "注册成功", redirect_url='/iuser/main/')
     except:
         print(traceback.format_exc())
         return dRet(500, "用户注册操作异常")

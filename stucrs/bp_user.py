@@ -5,10 +5,12 @@
 # 用户信息接口蓝图，构建在：/iuser
 
 from flask import Blueprint,request,render_template,redirect,url_for
-from flask_login import login_user,logout_user,login_required
+from flask_login import login_user,logout_user,login_required,current_user
 
-from .project_utils import get_db_path,datestr_to_timestamp,to_json,dRet
+from .project_utils import get_db_path,datestr_to_timestamp,to_json,dRet,get_next
 from .model import User
+
+import re
 import sqlite3
 
 iuser = Blueprint('iuser',__name__)
@@ -23,7 +25,9 @@ def login():
 		if lg_user.verify_password():
 			print("存储用户登录状态", lg_user.user_name, lg_user.phone, lg_user.email)
 			login_user(lg_user, remember=True)
-			return dRet(200, "成功")
+			print(dRet(200, "成功"))
+			ref_next = get_next(request.referrer)
+			return dRet(200, "成功", redirect_url=ref_next)
 		return dRet(500, "账号或密码错误")
 	return render_template('login.html')
 
@@ -37,12 +41,13 @@ def register():
 		return rg_user
 	return render_template('register.html')
 
-@iuser.route('/logout/', methods=['POST'])
+@iuser.route('/logout/', methods=['POST','GET'])
 def logout():
 	# 注销账号
 	logout_user()
-	# return redirect(url_for('login'))
-	return dRet(200, "成功")
+	print(dRet(200, "登出成功"))
+	return redirect(url_for('iuser.login'))
+
 
 
 @iuser.route('/verifyLogin/', methods=['POST'])
@@ -51,7 +56,33 @@ def verify_login():
 	# 测试登录状态是否成功
 	return dRet(200, "维持登录中")
 
-@iuser.route('/list',methods=['GET','POST'])
+@iuser.route('/main/',methods=['GET','POST'])
+@login_required
+def main():
+	if request.method == 'GET':
+		# 存储用户信息
+		iu = {
+			"user_id": current_user.user_id,
+			"user_name": current_user.user_name,
+			"phone": current_user.phone,
+			"password": current_user.password,
+			"email": current_user.email,
+			"industry": current_user.industry,
+			"real_name": current_user.real_name,
+			"birthday": current_user.birthday,
+			"age": current_user.age,
+			"city": current_user.city,
+			"current_identity": current_user.current_identity,
+			"personal_experience": current_user.personal_experience,
+			"educational_experience": current_user.educational_experience,
+			"head_pic": current_user.head_pic,
+			"create_time": current_user.create_time
+		}
+		return render_template("iuser_main.html", iu=iu)
+
+
+
+@iuser.route('/list/',methods=['GET','POST'])
 @login_required
 def list():
 	if request.method=='POST':
@@ -163,7 +194,7 @@ def list():
 	print(dm)
 
 
-	return render_template('login.html', dm=dm)
+	return render_template('iuser_main.html', dm=dm)
 
 
 # 增加修改前，获得数据内容

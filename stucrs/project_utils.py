@@ -8,6 +8,8 @@ import time
 import json
 import random
 import os
+import re
+import urllib.parse
 from flask import make_response,jsonify
 
 # 加密需要的模块
@@ -149,12 +151,21 @@ def get_db_path():
 	return get_project_dir()+'/my.db'
 
 # 自定义返回字典
-def dRet(status, msg_data):
-	return {
+def dRet(status, msg_data, **kwargs):
+	ret = {
 		200: {"status": 200, "data": msg_data},
 		500: {"status": 500, "msg": msg_data}
-	 }.get(status)
+	}
+	for k, v in kwargs.items():
+		ret[200][k] = v
+		ret[500][k] = v
+	return ret.get(status)
 
+# 获取referrer中next路由
+def get_next(referrer):
+	next = re.findall("next=(.*)", urllib.parse.unquote(referrer))
+	print("referrer:", next)
+	return next[0] if next else '/iuser/main/'
 
 #作为主模块时候的执行，一般测试函数使用
 if __name__ == '__main__':
