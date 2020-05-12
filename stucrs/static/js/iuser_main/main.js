@@ -37,7 +37,7 @@ jQuery(document).ready(function($){
 			}
 		})
 	}
-	var did = resetMonthly();
+	resetMonthly();
 
 	//switch from monthly to annual pricing tables
 	bouncy_filter($('.cd-pricing-container'));
@@ -61,6 +61,48 @@ jQuery(document).ready(function($){
 				event.preventDefault();
 				//detect which radio input item was checked
 				var selected_filter = $(event.target).val();
+
+				//更新用户信息
+				if( selected_filter === 'monthly' ) {
+					var iu_inputs = $("[data-type='yearly'] ul input");
+					var iu_param = {
+						"user_name": iu_inputs.eq(0).val(),
+						"phone": iu_inputs.eq(1).val(),
+						"email": iu_inputs.eq(2).val(),
+						"birthday": iu_inputs.eq(3).val(),
+						"city": iu_inputs.eq(4).val(),
+						"current_identity": iu_inputs.eq(5).val(),
+						"industry": iu_inputs.eq(6).val(),
+						"personal_experience": iu_inputs.eq(7).val(),
+						"educational_experience": iu_inputs.eq(8).val()
+					};
+					var jsonKey = JSON.stringify(iu_param);
+					console.log("执行更新请求", jsonKey);
+					//创建异步对象
+					var xhr = new XMLHttpRequest();
+					//这种请求的类型及url
+					//post请求一定要添加请求头才行，不然会报错
+					xhr.open("post","/iuser/iu_update");
+					xhr.setRequestHeader("Content-type","application/json");
+					//发送请求
+					xhr.send(jsonKey);
+					xhr.onreadystatechange = function(){
+						//这步为判断服务器是否正确响应
+						if(xhr.readyState == 4 && xhr.status == 200){
+							console.log(xhr.responseText);
+							var data = xhr.responseText;   // 获取响应数据
+							var json=JSON.parse(data);
+							if (json.status === 200){
+								// alert(json.data);
+								console.log(json);
+								window.location.href = json.redirect_url;
+							}else {
+								alert(json.msg);
+							}
+							return false;
+						}
+					};
+				}
 
 				//give higher z-index to the pricing table items selected by the radio input
 				show_selected_items(table_elements[selected_filter]);

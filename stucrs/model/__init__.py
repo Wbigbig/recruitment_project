@@ -98,3 +98,12 @@ class User(UserMixin):
         except:
             return
 
+# 用户个人信息更新操作
+def update_applicant_user(current_user, iu_param):
+    try:
+        print("更新用户信息", current_user.user_id, iu_param)
+        session.query(Applicant).filter(Applicant.user_id == current_user.user_id).update(iu_param)
+        return dRet(200, "更新成功", redirect_url='/iuser/main/')
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "更新异常")

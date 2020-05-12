@@ -8,7 +8,7 @@ from flask import Blueprint,request,render_template,redirect,url_for
 from flask_login import login_user,logout_user,login_required,current_user
 
 from .project_utils import get_db_path,datestr_to_timestamp,to_json,dRet,get_next
-from .model import User
+from .model import User, update_applicant_user
 
 import re
 import sqlite3
@@ -48,8 +48,6 @@ def logout():
 	print(dRet(200, "登出成功"))
 	return redirect(url_for('iuser.login'))
 
-
-
 @iuser.route('/verifyLogin/', methods=['POST'])
 @login_required
 def verify_login():
@@ -80,7 +78,12 @@ def main():
 		}
 		return render_template("iuser_main.html", iu=iu)
 
-
+# 更新修改用户信息
+@iuser.route('/iu_update',methods=['POST'])
+@login_required
+def iu_update():
+	iu_param = request.get_json()
+	return update_applicant_user(current_user, iu_param)
 
 @iuser.route('/list/',methods=['GET','POST'])
 @login_required
