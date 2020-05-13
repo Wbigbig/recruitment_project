@@ -13,6 +13,7 @@ from stucrs.project_utils import dRet
 
 import traceback
 
+
 # 用户注册操作
 def create_applicant_user(u_info):
     try:
@@ -103,7 +104,50 @@ def update_applicant_user(current_user, iu_param):
     try:
         print("更新用户信息", current_user.user_id, iu_param)
         session.query(Applicant).filter(Applicant.user_id == current_user.user_id).update(iu_param)
+        session.commit()
+        session.close()
         return dRet(200, "更新成功", redirect_url='/iuser/main/')
     except:
         print(traceback.format_exc())
         return dRet(500, "更新异常")
+
+# 获取用户投递记录
+def get_delivery_record(current_user):
+    try:
+        print("获取用户投递记录", current_user.user_id)
+        records = session.query(DeliveryRecord).filter(DeliveryRecord.user_id == current_user.user_id).all()
+        delivery_record_list = []
+        for record in records:
+            t_rec = {
+                "company_name": record.recruiter_company.company_name,
+                "job_title": record.recruitment_position.job_title,
+                "education_requirements": record.recruitment_position.education_requirements,
+                "salary_range": record.recruitment_position.salary_range,
+                "job_description": record.recruitment_position.job_description,
+                "work_address": record.recruitment_position.work_address,
+                "delivery_time": record.delivery_time.strftime("%Y-%m-%d %H:%M:%S"),
+                "hr_real_name": record.recruiter_hr.real_name,
+                "state": "-",
+                "data": 1
+            }
+            delivery_record_list.append(t_rec)
+        # 不足10条补齐10条
+        if len(records) < 10:
+            for _ in range(10-len(records)):
+                delivery_record_list.append({
+                "company_name": "-",
+                "job_title": "-",
+                "education_requirements": "-",
+                "salary_range": "-",
+                "job_description": "-",
+                "work_address": "-",
+                "delivery_time": "-",
+                "hr_real_name": "-",
+                "state": "-",
+                "data": 0
+            })
+        print("投递记录", current_user.user_id, delivery_record_list)
+        return dRet(200, delivery_record_list)
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "获取投递记录异常")

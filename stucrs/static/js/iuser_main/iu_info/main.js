@@ -25,13 +25,13 @@ jQuery(document).ready(function($){
 	//重置简介信息
 	function resetMonthly(){
 		var real_name = $("[data-type='monthly'] span")[0];
-		if (real_name.innerText === "None"){
+		if (real_name.innerText === "None" || real_name.innerText === ""){
 			real_name.innerHTML = "-";
 			$("[data-type='yearly'] span input").val("");
 		}
 		$("[data-type='monthly'] li").each(function (i) {
 			var li_val = $(this).context.innerText;
-			if(li_val === "None"){
+			if(li_val === "None" || li_val === ""){
 				$(this).text("请修改信息");
 				$("[data-type='yearly'] ul input").eq(i).val("");
 			}

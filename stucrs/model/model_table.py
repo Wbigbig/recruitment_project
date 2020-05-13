@@ -156,3 +156,72 @@ def drop_db_one(model):
 # drop_db_one(Applicant)
 # drop_db()
 # create_db()
+
+import random
+
+# 创建公司信息
+def create_RecruiterCompany():
+    company_info = {
+        "company_name": "无敌生化",
+        "company_industry": "化工",
+        "phone": "".join([str(random.randint(0,9)) for _ in range(11)]),
+        "address": "深圳市南山区高新技术园",
+        "establish_time": "2020-05-13",
+        "registered_capital": "1亿",
+        "legal_representative": "十八",
+        "company_profile": "来了就是一家人，团结一致好家伙！冲冲冲！"
+    }
+    session.add(RecruiterCompany(**company_info))
+    session.commit()
+    session.close()
+    print("创建公司完成")
+# create_RecruiterCompany()
+
+# 创建招聘者
+def create_RecruiterHr():
+    hr_info = {
+        "company_id": 1,
+        "name": "无敌生化HR",
+        "real_name": "任天高",
+        "phone": "".join([str(random.randint(0,9)) for _ in range(11)]),
+        "password": "000000",
+        "email": "hreamil@163.com",
+    }
+    session.add(RecruiterHr(**hr_info))
+    session.commit()
+    session.close()
+    print("创建HR完成")
+# create_RecruiterHr()
+
+# 创建招聘职位
+def create_RecruitmentPosition():
+    position_info = {
+        "company_id": 1,
+        "hr_id": 1,
+        "job_title": "无敌生化工程师",
+        "work_province": "广东",
+        "work_city": "深圳",
+        "work_address": "深圳市南山区高新技术园粤海大道1号",
+        "education_requirements": "博士后",
+        "salary_range": "100W/月薪",
+        "job_description": "熟读唐诗三百首！左青龙，右白虎！生化技术无所不能！干干干！"
+    }
+    session.add(RecruitmentPosition(**position_info))
+    session.commit()
+    session.close()
+    print("创建职位完成")
+# create_RecruitmentPosition()
+
+# 创建投递记录
+def create_DeliveryRecord():
+    delivery_info = {
+        "user_id": 3,
+        "company_id": 1,
+        "job_id": 1,
+        "hr_id": 1
+    }
+    session.add(DeliveryRecord(**delivery_info))
+    session.commit()
+    session.close()
+    print("创建投递记录完成")
+# create_DeliveryRecord()

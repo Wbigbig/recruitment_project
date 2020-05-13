@@ -8,7 +8,7 @@ from flask import Blueprint,request,render_template,redirect,url_for
 from flask_login import login_user,logout_user,login_required,current_user
 
 from .project_utils import get_db_path,datestr_to_timestamp,to_json,dRet,get_next
-from .model import User, update_applicant_user
+from .model import User, update_applicant_user, get_delivery_record
 
 import re
 import sqlite3
@@ -57,8 +57,9 @@ def verify_login():
 @iuser.route('/main/',methods=['GET','POST'])
 @login_required
 def main():
+	# 个人中心
 	if request.method == 'GET':
-		# 存储用户信息
+		# 获取用户信息
 		iu = {
 			"user_id": current_user.user_id,
 			"user_name": current_user.user_name,
@@ -76,7 +77,21 @@ def main():
 			"head_pic": current_user.head_pic,
 			"create_time": current_user.create_time
 		}
-		return render_template("iuser_main.html", iu=iu)
+		# 获取投递记录
+		iu_delivery_record = get_delivery_record(current_user).get('data')
+		# iu_delivery_record = [
+		# 	{
+		# 		"company_name": i,
+		# 		"job_title": i,
+		# 		"education_requirements": i,
+		# 		"salary_range": i,
+		# 		"job_description": i,
+		# 		"work_address": i,
+		# 		"delivery_time": i,
+		# 		"hr_real_name": i
+		# 	} for i in range(10)
+		# ]
+		return render_template("iuser_main.html", iu=iu, iu_delivery_record=iu_delivery_record)
 
 # 更新修改用户信息
 @iuser.route('/iu_update',methods=['POST'])
