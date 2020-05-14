@@ -8,7 +8,7 @@ from flask import Blueprint,request,render_template,redirect,url_for
 from flask_login import login_user,logout_user,login_required,current_user
 
 from .project_utils import get_db_path,datestr_to_timestamp,to_json,dRet,get_next
-from .model import User, update_applicant_user, get_delivery_record
+from .model import User, update_applicant_user, get_delivery_record, get_work_experience
 
 import re
 import sqlite3
@@ -79,6 +79,7 @@ def main():
 		}
 		# 获取投递记录
 		iu_delivery_record = get_delivery_record(current_user).get('data')
+		# 生成测试数据
 		# iu_delivery_record = [
 		# 	{
 		# 		"company_name": i,
@@ -91,7 +92,9 @@ def main():
 		# 		"hr_real_name": i
 		# 	} for i in range(10)
 		# ]
-		return render_template("iuser_main.html", iu=iu, iu_delivery_record=iu_delivery_record)
+		# 获取工作经历
+		iu_work_experience = get_work_experience(current_user)
+		return render_template("iuser_main.html", iu=iu, iu_delivery_record=iu_delivery_record, iu_work_experience=iu_work_experience)
 
 # 更新修改用户信息
 @iuser.route('/iu_update',methods=['POST'])

@@ -66,6 +66,7 @@ jQuery(document).ready(function($){
 				if( selected_filter === 'monthly' ) {
 					var iu_inputs = $("[data-type='yearly'] ul input");
 					var iu_param = {
+						"real_name": $("[data-type='yearly'] div.cd-price input").eq(0).val(),
 						"user_name": iu_inputs.eq(0).val(),
 						"phone": iu_inputs.eq(1).val(),
 						"email": iu_inputs.eq(2).val(),

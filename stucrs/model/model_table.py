@@ -225,3 +225,21 @@ def create_DeliveryRecord():
     session.close()
     print("创建投递记录完成")
 # create_DeliveryRecord()
+
+# 创建工作经历
+def create_WorkExperience():
+    work_experience_info = {
+        "user_id": 3,
+        "company_name": "电子化工领袖公司",
+        "company_industry": "电子行业",
+        "entry_time": "2018-06",
+        "departure_time": "2020-06",
+        "job_title": "电子工程师",
+        "department": "电子技术部门",
+        "job_content": "收到了开飞机稍等快乐就考虑大家快来就反抗来点实际分离开我我问解放路快递费但是是稍等快乐局我我的时间开心农场考虑就适乐肤\n对化工电子设备进行研究加工，实现公司以及客户的功能。为公司<br>创造伟大财富！实现自己的人生理想！冲冲冲！！！\nheieheieiehiehie收到了开飞机稍等快乐就考虑大家快来就反抗来点实际分离开我我问解放路快递费但是是稍等快乐局我我的时间开心农场考虑就适乐肤\n对化工电子设备进行研究加工，实现公司以及客户的功能。为公司创造伟大财富！实现自己的人生理想！冲冲冲！！！\nheieheieiehiehie收到了开飞机稍等快乐就考虑大家快来就反抗来点实际分离开我我问解放路快递费但是是稍等快乐局我我的时间开心农场考虑就适乐肤\n对化工电子设备进行研究加工，实现公司以及客户的功能。为公司创造伟大财富！实现自己的人生理想！冲冲冲！！！\nheieheieiehiehie收到了开飞机稍等快乐就考虑大家快来就反抗来点实际分离开我我问解放路快递费但是是稍等快乐局我我的时间开心农场考虑就适乐肤\n对化工电子设备进行研究加工，实现公司以及客户的功能。为公司创造伟大财富！实现自己的人生理想！冲冲冲！！！\nheieheieiehiehie",
+    }
+    session.add(WorkExperience(**work_experience_info))
+    session.commit()
+    session.close()
+    print("创建工作经历完成")
+# create_WorkExperience()

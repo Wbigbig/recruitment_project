@@ -146,8 +146,27 @@ def get_delivery_record(current_user):
                 "state": "-",
                 "data": 0
             })
+        session.close()
         print("投递记录", current_user.user_id, delivery_record_list)
         return dRet(200, delivery_record_list)
     except:
         print(traceback.format_exc())
         return dRet(500, "获取投递记录异常")
+
+# 获取应聘者工作经历
+def get_work_experience(current_user):
+    try:
+        print("获取用户工作经历", current_user.user_id)
+        experiences = session.query(WorkExperience).filter(WorkExperience.user_id == current_user.user_id).all()
+        experiences_list = []
+        for experience in experiences:
+            t_exp = {}
+            for k,v in vars(experience).items():
+                t_exp[k] = v
+            experiences_list.append(t_exp)
+        session.close()
+        print("工作经历", current_user.user_id, experiences_list)
+        return dRet(200, experiences_list, total=len(experiences_list))
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "获取工作经历异常")
