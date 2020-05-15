@@ -157,7 +157,7 @@ def get_delivery_record(current_user):
 def get_work_experience(current_user):
     try:
         print("获取用户工作经历", current_user.user_id)
-        experiences = session.query(WorkExperience).filter(WorkExperience.user_id == current_user.user_id).all()
+        experiences = session.query(WorkExperience).filter(WorkExperience.user_id == current_user.user_id).order_by(WorkExperience.create_time.desc()).all()
         experiences_list = []
         for experience in experiences:
             t_exp = {}
@@ -170,3 +170,66 @@ def get_work_experience(current_user):
     except:
         print(traceback.format_exc())
         return dRet(500, "获取工作经历异常")
+
+# 判断we_id是否在归属该用户
+def eq_we_id_in_work_experience(current_user, form_data):
+    try:
+        print("判断we_id归属", current_user.user_id, form_data)
+        for experience in get_work_experience(current_user).get('data'):
+            if experience['we_id'] == int(form_data['we_id']):
+                return dRet(200, experience)
+        return dRet(500, "该用户不存在此数据")
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "判断we_id归属异常")
+
+# 修改或保存应聘者工作经历
+def save_work_experience(current_user, form_data):
+    try:
+        if form_data['we_id'] != '0':
+            # 执行修改操作
+            print("执行更新工作经历操作", current_user.user_id, form_data)
+            eq_ret = eq_we_id_in_work_experience(current_user, form_data)
+            if eq_ret['status'] == 200:
+                update_experience_info = {
+                    "company_name": None,
+                    "company_industry": None,
+                    "entry_time": None,
+                    "departure_time": None,
+                    "job_title": None,
+                    "department": None,
+                    "job_content": None,
+                }
+                for k in update_experience_info.keys():
+                    update_experience_info[k] = form_data[k]
+                session.query(WorkExperience).filter(WorkExperience.we_id == int(form_data['we_id'])).update(update_experience_info)
+                session.commit()
+                session.close()
+                return dRet(200, "修改成功")
+            return eq_ret
+        print("执行新增工作经历操作", current_user.user_id, form_data)
+        form_data['we_id'] = int(form_data['we_id'])
+        form_data['user_id'] = current_user.user_id
+        print(form_data)
+        session.add(WorkExperience(**form_data))
+        session.commit()
+        session.close()
+        return dRet(200, "新增成功")
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "新增或保存工作经历异常")
+
+# 删除用户工作经历
+def remove_work_experience(current_user, form_data):
+    try:
+        print("执行删除工作经历操作", current_user.user_id, form_data)
+        eq_ret = eq_we_id_in_work_experience(current_user, form_data)
+        if eq_ret['status'] == 200:
+            session.query(WorkExperience).filter(WorkExperience.we_id == int(form_data['we_id'])).delete()
+            session.commit()
+            session.close()
+            return dRet(200, "删除成功")
+        return eq_ret
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "删除工作经历异常")

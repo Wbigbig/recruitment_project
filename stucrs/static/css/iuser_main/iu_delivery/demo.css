@@ -19,10 +19,13 @@
 
   body {
     font-family: "Source Sans Pro", sans-serif;
-    font-size: 90%;
     color: #333;
     justify-content: center;
     overflow-x: hidden;
+  }
+
+  .deliver-container {
+    font-size: 90%;
   }
 
   .deliver-container {

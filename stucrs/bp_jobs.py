@@ -10,57 +10,32 @@ import sqlite3
 
 jobs = Blueprint('jobs',__name__)
 
-# 显示数据库表 ztest 中的记录
+# 显示数据库表 RecruitmentPosition 中的记录
 @jobs.route('/list',methods=['GET','POST'])
 def list():
+	form_data = {
+		'start_time': '',				# 发布时间 YYYY-MM-DD
+		'end_time': '',					# 发布时间 YYYY-MM-DD
+		'education_requirements': '',	# 学历要求
+		'company_industry': '',			# 所属行业
+		'work_city': '',				# 城市
+		'page': '',						# 分页
+		'pagesize': ''					# 单页数量
+	}
+	# 查询post表单初始化字段
 	if request.method=='POST':
-		fclass = request.form.get('fclass') if ('fclass' in request.form) else ''
-		kw = request.form.get('kw') if ('kw' in request.form) else ''
-		date1 = request.form.get('date1') if ('date1' in request.form) else ''
-		date2 = request.form.get('date2') if ('date2' in request.form) else ''
-		
-		
-		
-		# 翻页的两项
-		page = request.form.get('page') if ('page' in request.form) else ''
-		pagesize = request.form.get('pagesize') if ('pagesize' in request.form) else ''
-	else:
-		fclass = ''
-		kw = ''
-		date1 = ''
-		date2 = ''
-		
-		page=''
-		pagesize=''
-		
-		
-	# 日期的字符串转为时间戳，进行数据库的查询
-	try:
-		ftime1 = datestr_to_timestamp(date1,format='%Y-%m-%d') if date1!='' else 0
-		ftime2 = datestr_to_timestamp(date2,format='%Y-%m-%d') if date2!='' else 0
-	except:
-		ftime1 = 0
-		ftime2 = 0
+		for k in form_data.keys():
+			form_data[k] = request.form.get(k, '')
 		
 	# 分页的转换单独写
 	try:
-		page = int(page)
-		pagesize = int(pagesize)
+		page = int(form_data['page'])
 	except:
-		page=1
+		page = 1
+	try:
+		pagesize = int(form_data['pagesize'])
+	except:
 		pagesize=10
-		
-	
-		
-	# 将页面上需要的数据统一放到数据模型 data modal 中,字典
-	dm = {}
-	dm['fclass']=fclass
-	dm['kw']=kw
-	dm['date1'] = date1
-	dm['date2'] = date2
-	dm['page']=page
-	dm['pagesize']=pagesize
-
 
 	conn = sqlite3.connect(get_db_path())
 	cursor = conn.cursor()
