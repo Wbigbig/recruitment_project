@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # _*_coding:utf-8 _*_
-# Time    : 2019/12/31 16:38
+# Time    : 2020/5/18 18:55
 # Author  : W 
-# FileName: spyder51Job.py
+# FileName: spyder512Job.py
 
 import requests
 import re
@@ -214,7 +214,7 @@ if __name__ == '__main__':
     # Spyder51Job()
     import pprint
     # pprint.pprint(spyder51CompanyMain("111"))
-    spyder51CompanyInsertDB()
+    # spyder51CompanyInsertDB()
     # pprint.pprint(spyder51JobInfoMain("1"))
-    # spyder51JobInfoInsertDB()
+    spyder51JobInfoInsertDB()
     pass
