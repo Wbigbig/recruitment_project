@@ -29,7 +29,7 @@ ENGINE = create_engine(connect_info,
                        pool_recycle=-1  # 多久之后对线程池中的线程进行一次连接的回收（重置）
                        )
 # 创建会话
-Session = sessionmaker(bind=ENGINE)
+Session = sessionmaker(bind=ENGINE,expire_on_commit=False)
 session = Session()
 # 创建基类
 Base = declarative_base()
