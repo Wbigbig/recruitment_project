@@ -159,6 +159,8 @@ def drop_db_one(model):
 # drop_db()
 # create_db()
 
+
+########################### 测试创建数据
 import random
 
 # 创建公司信息
@@ -245,51 +247,3 @@ def create_WorkExperience():
     session.close()
     print("创建工作经历完成")
 # create_WorkExperience()
-
-
-# 查询职位列表job_list
-def search_job_list(current_user, form_data):
-    try:
-        # print("查询职位列表操作", current_user.user_id, form_data)
-        print("1")
-        search_ = []
-        # 多表查询 RecruitmentPosition, RecruiterCompany, RecruiterHr
-        search_.append(and_(RecruitmentPosition.company_id == RecruiterCompany.company_id, RecruitmentPosition.hr_id == RecruiterHr.hr_id))
-        if form_data['start_time']:
-            # dd = '2019-03-17 11:00:00'
-            start_time = datetime.datetime.strptime(form_data['start_time'], "%Y-%m-%d %H:%M:%S")
-            end_time = datetime.datetime.strptime(form_data['end_time'], "%Y-%m-%d %H:%M:%S")
-            search_.append(and_(RecruitmentPosition.create_time>=start_time, RecruitmentPosition.create_time<=end_time))
-        if form_data['education_requirements']:
-            search_.append(RecruitmentPosition.education_requirements.like('%{0}%'.format(form_data['education_requirements'])))
-        if form_data['company_industry']:
-            search_.append(RecruiterCompany.company_industry.like('%{0}%'.format(form_data['company_industry'])))
-        if form_data['work_city']:
-            search_.append(RecruitmentPosition.work_city.like('%{0}%'.format(form_data['work_city'])))
-        job_list = session.query(RecruitmentPosition, RecruiterCompany, RecruiterHr).filter(*search_).all()
-        job_list_ret = []
-        for job in job_list:
-            tem_job = {}
-            tem_job['job_title'] = job.RecruitmentPosition.job_title
-            tem_job['company_name'] = job.RecruiterCompany.company_name
-            tem_job['work_city'] = job.RecruitmentPosition.work_city
-            tem_job['salary_range'] = job.RecruitmentPosition.salary_range
-            tem_job['create_time'] = job.RecruitmentPosition.create_time.strftime("%Y-%m-%d %H:%M")
-            job_list_ret.append(tem_job)
-        print(job_list_ret, len(job_list_ret))
-        session.close()
-    except:
-        print(traceback.format_exc())
-        # return dRet(500, "查询职位列表异常")
-        pass
-
-form_data = {
-    'start_time': '2020-05-17 00:00:00',				# 发布时间 YYYY-MM-DD
-    'end_time': '2020-05-17 18:31:00',					# 发布时间 YYYY-MM-DD
-    'education_requirements': '',	# 学历要求
-    'company_industry': '',			# 所属行业
-    'work_city': '',				# 城市
-}
-# search_job_list(None, form_data)
-
-print(0//2)
