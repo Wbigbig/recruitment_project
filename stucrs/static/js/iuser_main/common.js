@@ -1,5 +1,5 @@
 // 固定路由
-let main_route = '/iuser';
+var main_route = '/iuser';
 
 //查询，恢复页码到1，并提交表单
 var search = function(){
@@ -124,40 +124,3 @@ var remove = function(we_id){
 		$('#form_search').get(0).submit();
 	});
 };
-
-var init = function(){
-	//日期控件的初始化
-	jqu.formItem('date1','form_search').datetimepicker({
-		format: 'yyyy-mm-dd',
-		autoclose: 1,
-		todayHighlight: 1,
-		todayBtn: true,
-		language: 'zh-CN',
-		minView:2
-	});
-	
-	jqu.formItem('date2','form_search').datetimepicker({
-		format: 'yyyy-mm-dd',
-		autoclose: 1,
-		todayHighlight: 1,
-		todayBtn: true,
-		language: 'zh-CN',
-		minView:2
-	});
-	
-	//根据上一次查询的日期端，设置到文本框中
-	jqu.formItem('date1','form_search').val(date1);
-	jqu.formItem('date2','form_search').val(date2);
-	
-	//新增/修改表单中的日期
-	jqu.formItem('fdate','form_am').datetimepicker({
-		format: 'yyyy-mm-dd',
-		autoclose: 1,
-		todayHighlight: 1,
-		todayBtn: true,
-		language: 'zh-CN',
-		minView:2
-	});
-};
-
-$(init);

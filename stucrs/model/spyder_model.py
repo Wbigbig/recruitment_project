@@ -34,110 +34,86 @@ session = Session()
 # 创建基类
 Base = declarative_base()
 
-# 应聘者表
-class Applicant(Base):
-    __tablename__ = "applicant"
-    user_id = Column(Integer, primary_key=True)
-    user_name = Column(String(50), index=True)
-    phone = Column(String(11), unique=True, index=True)
-    password = Column(String(50))
-    email = Column(String(50), unique=True)
-    industry = Column(String(50))
-    real_name = Column(String(50))
-    birthday = Column(String(50))
-    age = Column(Integer)
-    city = Column(String(50))
-    current_identity = Column(String(50))
-    personal_experience = Column(Text)
-    educational_experience = Column(Text)
-    head_pic = Column(Text)
+# 爬取公司信息表
+# class spyderCompany(Base):
+#     __tablename__ = "spyder_company"
+#     company_id = Column(Integer, primary_key=True)
+#     company_tag = Column(String(50))    # 国企/
+#     company_name = Column(String(100), unique=True, index=True) # 简称
+#     company_hold_name = Column(String(100), unique=True, index=True)    # 营业执照
+#     company_industry = Column(String(50))   # 行业
+#     phone = Column(String(11), unique=True)
+#     address = Column(Text)  # 公司地址
+#     establish_time = Column(String(50))
+#     registered_capital = Column(String(50))
+#     legal_representative = Column(String(50))
+#     company_profile = Column(Text)      # 公司介绍
+#     company_pic = Column(Text)
+#     create_time = Column(DateTime, default=datetime.datetime.now)
+
+# 首页搜索表
+class spyderSearchMain(Base):
+    __tablename__ = "spyder_mainsearch"
+    job_id = Column(Integer, primary_key=True)
+    job_name = Column(String(50), index=True)
+    company_name = Column(String(100), index=True)
+    company_link = Column(String(300))
+    work_place = Column(String(50))
+    salary = Column(String(50))
+    puttime = Column(String(50))
+    job_link = Column(String(300))
     create_time = Column(DateTime, default=datetime.datetime.now)
 
-# 应聘者工作经历表
-class WorkExperience(Base):
-    __tablename__ = "work_experience"
-    we_id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("applicant.user_id"), index=True)
-    company_name = Column(String(100))
-    company_industry = Column(String(50))
-    entry_time = Column(String(50))
-    departure_time = Column(String(50))
-    job_title = Column(String(50))
-    department = Column(String(50))
-    job_content = Column(Text)
-    create_time = Column(DateTime, default=datetime.datetime.now)
-
-    # 与生成表结构无关，仅用于查询方便
-    applicant = relationship("Applicant", backref="wes")
-
-# 企业招聘者所属公司信息
-class RecruiterCompany(Base):
-    __tablename__ = "recruiter_company"
-    company_id = Column(Integer, primary_key=True)
-    company_name = Column(String(100), unique=True, index=True)
-    company_industry = Column(String(50))
-    phone = Column(String(11), unique=True)
-    address = Column(Text)
-    establish_time = Column(String(50))
-    registered_capital = Column(String(50))
-    legal_representative = Column(String(50))
-    company_profile = Column(Text)
-    company_pic = Column(Text)
-    create_time = Column(DateTime, default=datetime.datetime.now)
+import time
+# 搜索表入库操作
+def insertSearchMain(job_list):
+    try:
+        add_list = []
+        for job in job_list:
+            # 过滤重复
+            eq_st = time.time()
+            if session.query(spyderSearchMain).filter(and_(spyderSearchMain.job_name == job["job_name"], spyderSearchMain.company_name == job["company_name"])).first():
+                continue
+            eq_et = time.time()
+            print("对比时间%s秒" % (eq_et - eq_st))
+            add_list.append(spyderSearchMain(**job))
+        session.add_all(add_list)
+        session.commit()
+        session.close()
+        print("applicant_add", len(add_list))
+    except:
+        print(traceback.format_exc())
 
 # 企业招聘者HR
-class RecruiterHr(Base):
-    __tablename__ = "recruiter_hr"
-    hr_id = Column(Integer, primary_key=True)
-    company_id = Column(Integer, ForeignKey("recruiter_company.company_id"), index=True)
-    name = Column(String(11), index=True)
-    real_name = Column(String(50))
-    phone = Column(String(50), unique=True)
-    password = Column(String(50))
-    email = Column(String(50), unique=True)
-    head_pic = Column(Text)
-    create_time = Column(DateTime, default=datetime.datetime.now)
-
-    # 与生成表结构无关，仅用于查询方便
-    recruiter_company = relationship("RecruiterCompany", backref="rec_hrs")
+# class RecruiterHr(Base):
+#     __tablename__ = "recruiter_hr"
+#     hr_id = Column(Integer, primary_key=True)
+#     company_id = Column(Integer, ForeignKey("recruiter_company.company_id"), index=True)
+#     name = Column(String(11), index=True)
+#     real_name = Column(String(50))
+#     phone = Column(String(50), unique=True)
+#     password = Column(String(50))
+#     email = Column(String(50), unique=True)
+#     head_pic = Column(Text)
+#     create_time = Column(DateTime, default=datetime.datetime.now)
+#
+#     # 与生成表结构无关，仅用于查询方便
+#     recruiter_company = relationship("RecruiterCompany", backref="rec_hrs")
 
 # 招聘职位信息
-class RecruitmentPosition(Base):
-    __tablename__ = "recruitment_position"
-    job_id = Column(Integer, primary_key=True)
-    company_id = Column(Integer, ForeignKey("recruiter_company.company_id"), index=True)
-    hr_id = Column(Integer, ForeignKey("recruiter_hr.hr_id"), index=True)
-    job_title = Column(String(50), index=True)
-    work_province = Column(String(50))
-    work_city = Column(String(50))
-    work_address = Column(Text)
-    education_requirements = Column(String(50))
-    salary_range = Column(String(50))
-    job_description = Column(Text)
-    create_time = Column(DateTime, default=datetime.datetime.now)
-
-# 投递记录表
-class DeliveryRecord(Base):
-    __tablename__ = "delivery_record"
-    delivery_id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("applicant.user_id"), index=True)
-    company_id = Column(Integer, ForeignKey("recruiter_company.company_id"), index=True)
-    job_id = Column(Integer, ForeignKey("recruitment_position.job_id"), index=True)
-    hr_id = Column(Integer, ForeignKey("recruiter_hr.hr_id"), index=True)
-    delivery_time = Column(DateTime, default=datetime.datetime.now)
-
-    # 与生成表结构无关，仅用于查询方便
-    # 与应聘者的正反向查询
-    applicant = relationship("Applicant", backref="drs")
-
-    # 与企业公司的正反向查询
-    recruiter_company = relationship("RecruiterCompany", backref="drs")
-
-    # 与职位信息的正反向查询
-    recruitment_position = relationship("RecruitmentPosition", backref="drs")
-
-    # 与HR信息的正反向查询
-    recruiter_hr = relationship("RecruiterHr", backref="drs")
+# class RecruitmentPosition(Base):
+#     __tablename__ = "recruitment_position"
+#     job_id = Column(Integer, primary_key=True)
+#     company_id = Column(Integer, ForeignKey("recruiter_company.company_id"), index=True)
+#     hr_id = Column(Integer, ForeignKey("recruiter_hr.hr_id"), index=True)
+#     job_title = Column(String(50), index=True)
+#     work_province = Column(String(50))
+#     work_city = Column(String(50))
+#     work_address = Column(Text)
+#     education_requirements = Column(String(50))
+#     salary_range = Column(String(50))
+#     job_description = Column(Text)
+#     create_time = Column(DateTime, default=datetime.datetime.now)
 
 def create_db():
     # 创建所有表

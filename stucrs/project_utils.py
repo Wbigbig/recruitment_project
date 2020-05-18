@@ -154,7 +154,8 @@ def get_db_path():
 def dRet(status, msg_data, **kwargs):
 	ret = {
 		200: {"status": 200, "data": msg_data},
-		500: {"status": 500, "msg": msg_data}
+		500: {"status": 500, "msg": msg_data},
+		302: {"status": 302, "redirect_url": msg_data}
 	}
 	for k, v in kwargs.items():
 		ret[200][k] = v

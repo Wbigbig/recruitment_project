@@ -1,7 +1,10 @@
 /*登录页面样式*/
 
 body{
-    background-color: #c7ddef;
+    /*background-color: #c7ddef;*/
+    background:url("/img/登录.jpg") no-repeat;
+    background-size: 100%;
+    background-attachment: fixed;
 }
 a{
     text-decoration: none;

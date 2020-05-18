@@ -144,7 +144,7 @@ var remove = function(id, type){
 
 var init = function(){
 	//日期控件的初始化
-	jqu.formItem('date1','form_search').datetimepicker({
+	jqu.formItem('start_time','form_search').datetimepicker({
 		format: 'yyyy-mm-dd',
 		autoclose: 1,
 		todayHighlight: 1,
@@ -153,7 +153,7 @@ var init = function(){
 		minView:2
 	});
 	
-	jqu.formItem('date2','form_search').datetimepicker({
+	jqu.formItem('end_time','form_search').datetimepicker({
 		format: 'yyyy-mm-dd',
 		autoclose: 1,
 		todayHighlight: 1,
@@ -163,8 +163,8 @@ var init = function(){
 	});
 	
 	//根据上一次查询的日期端，设置到文本框中
-	jqu.formItem('date1','form_search').val(date1);
-	jqu.formItem('date2','form_search').val(date2);
+	jqu.formItem('start_time','form_search').val(start_time);
+	jqu.formItem('end_time','form_search').val(end_time);
 	
 	//新增/修改表单中的日期
 	jqu.formItem('fdate','form_am').datetimepicker({

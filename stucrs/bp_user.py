@@ -10,9 +10,6 @@ from flask_login import login_user,logout_user,login_required,current_user
 from .project_utils import get_db_path,datestr_to_timestamp,to_json,dRet,get_next
 from .model import User, update_applicant_user, get_delivery_record, get_work_experience, eq_we_id_in_work_experience, save_work_experience, remove_work_experience
 
-import re
-import sqlite3
-
 iuser = Blueprint('iuser',__name__)
 
 @iuser.route('/login/', methods=['POST','GET'])
