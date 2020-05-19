@@ -46,7 +46,7 @@ def create_app():
     )
 
     # 设置密钥 生成session
-    app.config['SECRET_KEY'] = 'recruitment'
+    app.config['SECRET_KEY'] = project_config['SECRET_KEY']
 
     # 配置蓝图
     app.register_blueprint(blueprint=main)

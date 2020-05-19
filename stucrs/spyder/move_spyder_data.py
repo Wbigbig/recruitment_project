@@ -40,23 +40,15 @@ def create_move_spydercompany_to_company():
     for i in range(1, pagetotal+1):
         get_company_list = get_company_by_page(i, 500, pagetotal)
         for company in get_company_list:
-            if n <= 386:
-                n += 1
-                continue
             hr_info = {
                 "company_id": company.company_id,
                 "name": None if not company.company_name else (company.company_name[0:3] + "Hr") if len(company.company_name) > 3 else (company.company_name + "Hr"),
-                "real_name": None if not company.company_name else (company.company_name[0:3] + "Hr") if len(company.company_name) > 3 else (company.company_name + "Hr"),
-                # "phone": "".join([str(random.randint(0, 9)) for _ in range(11)]),
-                # "password": "000000",
-                # "email": "hreamil2@163.com",
+                "real_name": None if not company.company_name else (company.company_name[0:3] + "Hr") if len(company.company_name) > 3 else (company.company_name + "Hr")
             }
-
             create_RecruiterHr(hr_info)
             n += 1
             print(n)
 
-#9242
 # create_move_spydercompany_to_company()
 
 import datetime
@@ -70,9 +62,6 @@ def move_spyderposition_to_position():
             # 找到company的hrid
             hr = search_hr_id_by_company_id(job.company_id)
             if not hr:
-                n+=1
-                continue
-            if n < 2:
                 n+=1
                 continue
             job_info = {
@@ -91,4 +80,4 @@ def move_spyderposition_to_position():
             n += 1
             print(n)
 
-move_spyderposition_to_position()
+# move_spyderposition_to_position()

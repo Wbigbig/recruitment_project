@@ -88,6 +88,7 @@ class RecruiterCompany(Base):
 def get_total_ptotal_from_RecruiterCompany(pagesize):
     try:
         total = session.query(RecruiterCompany).count()
+        session.close()
         pagetotal = total // pagesize if total % pagesize == 0 else total // pagesize + 1
         return total, pagetotal
     except:
