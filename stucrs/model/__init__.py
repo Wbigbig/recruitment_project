@@ -114,7 +114,7 @@ def update_applicant_user(current_user, iu_param):
 def get_delivery_record(current_user):
     try:
         print("获取用户投递记录", current_user.user_id)
-        records = session.query(DeliveryRecord).filter(DeliveryRecord.user_id == current_user.user_id).all()
+        records = session.query(DeliveryRecord).filter(DeliveryRecord.user_id == current_user.user_id).order_by(DeliveryRecord.delivery_time.desc()).all()
         delivery_record_list = []
         for record in records:
             t_rec = {
@@ -169,6 +169,29 @@ def get_work_experience(current_user):
     except:
         print(traceback.format_exc())
         return dRet(500, "获取工作经历异常")
+
+# 获取应聘者收藏表
+def get_position_heart(current_user):
+    try:
+        print("获取用户收藏记录", current_user.user_id)
+        position_hearts = session.query(heartPosition).filter(heartPosition.user_id == current_user.user_id).all()
+        hearts_list = []
+        for heart in position_hearts:
+            ret_position = filter_from_model_by_kw(RecruitmentPosition, job_id=heart.job_id)
+            if not ret_position: continue
+            hearts_list.append({
+                "job_id": ret_position.job_id,
+                "job_title": ret_position.job_title,
+                "company_name": ret_position.recruiter_company.company_name,
+                "work_city": ret_position.work_city,
+                "salary_range": ret_position.salary_range,
+                "hr_name": ret_position.recruiter_hr.name,
+                "create_time": ret_position.create_time.strftime("%Y-%m-%d %H:%M")
+            })
+        return dRet(200, hearts_list)
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "获取收藏记录异常")
 
 # 判断we_id是否在归属该用户
 def eq_we_id_in_work_experience(current_user, form_data):
@@ -232,6 +255,21 @@ def remove_work_experience(current_user, form_data):
     except:
         print(traceback.format_exc())
         return dRet(500, "删除工作经历异常")
+
+# 删除用户收藏
+def remove_position_heart(current_user, form_data):
+    try:
+        print("执行删除收藏操作", current_user.user_id, form_data)
+        ret_heart = filter_from_model_by_kw(heartPosition, user_id=current_user.user_id, job_id=int(form_data["job_id"]))
+        if not ret_heart:
+            return dRet(500, "无该数据")
+        session.query(heartPosition).filter(and_(heartPosition.user_id==current_user.user_id,heartPosition.job_id==int(form_data["job_id"]))).delete()
+        session.commit()
+        session.close()
+        return  dRet(200, "已取消收藏该职位")
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "删除收藏异常")
 
 # 查询职位列表job_list
 def search_job_list(current_user, form_data):
@@ -322,8 +360,68 @@ def delivery_by_job_id(current_user, form_data):
         print(traceback.format_exc())
         return dRet(500, "投递异常")
 
+# 进行收藏操作
+def heart_by_job_id(current_user, form_data):
+    try:
+        print("执行收藏职位操作", current_user.user_id, form_data)
+        # 判断是否有该职位
+        job_ret = filter_from_model_by_kw(RecruitmentPosition, job_id=int(form_data["job_id"]))
+        if not job_ret:
+            return dRet(500, "无该职位信息或该职位已撤销")
+        # 判断是否重复收藏
+        pos_heart_ret = filter_from_model_by_kw(heartPosition, user_id=current_user.user_id, job_id=int(form_data["job_id"]))
+        if pos_heart_ret:
+            return dRet(500, "重复收藏")
+        heart_info = {
+            "user_id": current_user.user_id,
+            "job_id": int(form_data['job_id']),
+        }
+        session.add(heartPosition(**heart_info))
+        session.commit()
+        session.close()
+        return dRet(200, "收藏成功")
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "收藏异常")
+
+
 # 根据company_id 查找hr_id
 def search_hr_id_by_company_id(company_id):
     hr = session.query(RecruiterHr).filter(RecruiterHr.company_id == company_id).first()
     session.close()
     return hr
+
+# 根据job_id 查找职位信息
+def search_job_details_by_job_id(job_id):
+    position = filter_from_model_by_kw(RecruitmentPosition, job_id=int(job_id))
+    if not position:
+        return dRet(500, "该职位不存在")
+    # 发布hr
+    hr = filter_from_model_by_kw(RecruiterHr, hr_id=position.hr_id)
+    # 归属公司
+    company = hr.recruiter_company
+    position_dict, hr_dict, company_dict = {}, {}, {}
+    for k,v in vars(position).items():
+        position_dict[k] = v
+    for k,v in vars(hr).items():
+        hr_dict[k] = v
+    for k,v in vars(company).items():
+        company_dict[k] = v
+    ret = {
+        "position": position_dict,
+        "hr": hr_dict,
+        "company": company_dict
+    }
+    return dRet(200, ret)
+
+# 判断表是否存在该数据
+def filter_from_model_by_kw(model, **kwargs):
+    """
+
+    :param model:
+    :param kwargs:
+    :return:
+    """
+    ret = session.query(model).filter_by(**kwargs).first()
+    # session.close()
+    return ret

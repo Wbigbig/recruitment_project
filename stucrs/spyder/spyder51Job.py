@@ -181,8 +181,8 @@ def spyder51JobInfoMain(job):
             "Upgrade-Insecure-Requests": "1",
             "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"
         }
-        res = requests.get("https://jobs.51job.com/shenzhen-ftq/122175941.html?s=01&t=0", headers=headers)
-        # res = requests.get(job.job_link, headers=headers)
+        # res = requests.get("https://jobs.51job.com/shenzhen-ftq/122175941.html?s=01&t=0", headers=headers)
+        res = requests.get(job.job_link, headers=headers)
         res.encoding = res.apparent_encoding
         response = res.text
         doc = pq(response)
@@ -214,7 +214,7 @@ if __name__ == '__main__':
     # Spyder51Job()
     import pprint
     # pprint.pprint(spyder51CompanyMain("111"))
-    spyder51CompanyInsertDB()
+    # spyder51CompanyInsertDB()
     # pprint.pprint(spyder51JobInfoMain("1"))
     # spyder51JobInfoInsertDB()
     pass

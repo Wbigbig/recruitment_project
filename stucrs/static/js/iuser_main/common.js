@@ -124,3 +124,17 @@ var remove = function(we_id){
 		$('#form_search').get(0).submit();
 	});
 };
+
+// 删除收藏
+var heart_remove = function(job_id){
+	thisUrl = main_route + '/position_heart_remove';
+	jqu.loadJson(thisUrl,{job_id:job_id},function(result){
+		if(result.status === 500){
+			alert(result.msg);
+			return;
+		}
+
+		alert('删除成功');
+		$('#form_search').get(0).submit();
+	});
+};

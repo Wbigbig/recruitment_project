@@ -408,6 +408,10 @@
     text-align: center;
     margin-top: 0;
   }
+  .table-wrapper span {
+    margin: auto;
+    line-height: 18px;
+  }
   .table-wrapper table tbody tr td:first-of-type {
     background-color: #FFFFFF;
     position: -webkit-sticky;

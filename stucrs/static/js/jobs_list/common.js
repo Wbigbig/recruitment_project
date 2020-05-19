@@ -72,6 +72,25 @@ var delivery = function(job_id){
 	});
 };
 
+//收藏
+var heart = function (job_id) {
+	var thisUrl = main_route + '/heart';
+	//提交数据进行收藏
+	var jsonData = {"job_id": job_id};
+	// $.post(thisUrl, jsonData, function (result) {
+	// 	console.log(result);
+	// });
+	jqu.loadJson(thisUrl,jsonData,function(result){
+		console.log(result);
+		if(result.status === 200){
+			alert(result.data);
+			return;
+		}
+		//收藏失败
+		alert(result.msg);
+	});
+};
+
 var init = function(){
 	//日期控件的初始化
 	jqu.formItem('start_time','form_search').datetimepicker({

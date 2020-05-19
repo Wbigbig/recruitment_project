@@ -240,6 +240,6 @@ def get_position_by_page(page, pagesize, pagetotal):
         print(traceback.format_exc())
         return
 
-# drop_db_one(Applicant)
+# drop_db_one(RecruiterCompany)
 # drop_db()
 # create_db()

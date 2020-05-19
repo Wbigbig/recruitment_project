@@ -138,6 +138,12 @@ class RecruitmentPosition(Base):
     job_description = Column(Text)
     create_time = Column(DateTime, default=datetime.datetime.now)
 
+    # 与生成表结构无关，仅用于查询方便
+    recruiter_company = relationship("RecruiterCompany", backref="rec_pos")
+
+    # 与HR信息的正反向查询
+    recruiter_hr = relationship("RecruiterHr", backref="rec_pos")
+
 # 投递记录表
 class DeliveryRecord(Base):
     __tablename__ = "delivery_record"
@@ -160,6 +166,17 @@ class DeliveryRecord(Base):
 
     # 与HR信息的正反向查询
     recruiter_hr = relationship("RecruiterHr", backref="drs")
+
+# 收藏表
+class heartPosition(Base):
+    __tablename__ = "recruitment_position_heart"
+    heart_id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("applicant.user_id"), index=True)
+    job_id = Column(Integer, index=True)    # 不能使用外键，若删除了job，收藏记录还是要有的
+    create_time = Column(DateTime, default=datetime.datetime.now)
+
+    # 与应聘者的正反向查询
+    applicant = relationship("Applicant", backref="pos_heart")
 
 def create_db():
     # 创建所有表
@@ -213,7 +230,11 @@ def create_RecruiterHr(hr_info):
     #     "password": "000000",
     #     "email": "hreamil2@163.com",
     # }
-    session.add(RecruiterHr(**hr_info))
+    add_list = []
+    for h in hr_info:
+        add_list.append(RecruiterHr(**h))
+    # session.add(RecruiterHr(**hr_info))
+    session.add_all(add_list)
     session.commit()
     session.close()
     print("创建HR完成")
@@ -232,7 +253,11 @@ def create_RecruitmentPosition(position_info):
     #     "salary_range": "100W/月薪",
     #     "job_description": "2222222222222熟读唐诗三百首！左青龙，右白虎！生化技术无所不能！干干干！"
     # }
-    session.add(RecruitmentPosition(**position_info))
+    add_list = []
+    for p in position_info:
+        add_list.append(RecruitmentPosition(**p))
+    # session.add(RecruitmentPosition(**position_info))
+    session.add_all(add_list)
     session.commit()
     session.close()
     print("创建职位完成")

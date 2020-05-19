@@ -82,7 +82,7 @@ jqu.loadJs('/js/jobs_list/common.js');
       <tbody>
         {% for job in jobs_data.data.jobs_list %}
        <tr> 
-        <td><a href="{{url_for('jobs.delivery',id=job.job_id)}}" target="_blank">{{job.job_title}}</a></td>
+        <td><a href="{{url_for('jobs.details',id=job.job_id)}}" target="_blank">{{job.job_title}}</a></td>
         <td>{{job.company_name}}</td>
         <td>{{job.work_city}}</td>
         <td>{{job.salary_range}}</td>
@@ -91,7 +91,7 @@ jqu.loadJs('/js/jobs_list/common.js');
         <td>
 			<a href="javascript:;" onclick="delivery({{job.job_id}})"><i class="fa fa-edit"></i> 投递</a>
 			&nbsp;
-			<a href="javascript:;" onclick="remove({{job.job_id}})"><i class="fa fa-heart"></i> 收藏</a>
+			<a href="javascript:;" onclick="heart({{job.job_id}})"><i class="fa fa-heart"></i> 收藏</a>
 		
 		</td> 
        </tr> 
