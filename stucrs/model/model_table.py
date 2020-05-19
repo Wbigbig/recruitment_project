@@ -85,6 +85,27 @@ class RecruiterCompany(Base):
     company_pic = Column(Text)
     create_time = Column(DateTime, default=datetime.datetime.now)
 
+def get_total_ptotal_from_RecruiterCompany(pagesize):
+    try:
+        total = session.query(RecruiterCompany).count()
+        pagetotal = total // pagesize if total % pagesize == 0 else total // pagesize + 1
+        return total, pagetotal
+    except:
+        print(traceback.format_exc())
+        return
+
+def get_company_by_page(page, pagesize, pagetotal):
+    try:
+        if page < 1 or page > pagetotal:
+            print("页码异常")
+            return None
+        ret = session.query(RecruiterCompany).order_by(RecruiterCompany.company_id).limit(pagesize).offset((page - 1) * pagesize)
+        session.close()
+        return ret
+    except:
+        print(traceback.format_exc())
+        return
+
 # 企业招聘者HR
 class RecruiterHr(Base):
     __tablename__ = "recruiter_hr"
@@ -164,17 +185,17 @@ def drop_db_one(model):
 import random
 
 # 创建公司信息
-def create_RecruiterCompany():
-    company_info = {
-        "company_name": "无敌生化2",
-        "company_industry": "高科技",
-        "phone": "".join([str(random.randint(0,9)) for _ in range(11)]),
-        "address": "深圳市南山区高新技术园2",
-        "establish_time": "2020-05-13",
-        "registered_capital": "5亿",
-        "legal_representative": "二八",
-        "company_profile": "11111111111来了就是一家人，团结一致好家伙！冲冲冲！"
-    }
+def create_RecruiterCompany(company_info):
+    # company_info = {
+    #     "company_name": "无敌生化2",
+    #     "company_industry": "高科技",
+    #     "phone": "".join([str(random.randint(0,9)) for _ in range(11)]),
+    #     "address": "深圳市南山区高新技术园2",
+    #     "establish_time": "2020-05-13",
+    #     "registered_capital": "5亿",
+    #     "legal_representative": "二八",
+    #     "company_profile": "11111111111来了就是一家人，团结一致好家伙！冲冲冲！"
+    # }
     session.add(RecruiterCompany(**company_info))
     session.commit()
     session.close()
@@ -182,15 +203,15 @@ def create_RecruiterCompany():
 # create_RecruiterCompany()
 
 # 创建招聘者
-def create_RecruiterHr():
-    hr_info = {
-        "company_id": 1,
-        "name": "无敌生化2HR",
-        "real_name": "任我闯",
-        "phone": "".join([str(random.randint(0,9)) for _ in range(11)]),
-        "password": "000000",
-        "email": "hreamil2@163.com",
-    }
+def create_RecruiterHr(hr_info):
+    # hr_info = {
+    #     "company_id": 1,
+    #     "name": "无敌生化2HR",
+    #     "real_name": "任我闯",
+    #     "phone": "".join([str(random.randint(0,9)) for _ in range(11)]),
+    #     "password": "000000",
+    #     "email": "hreamil2@163.com",
+    # }
     session.add(RecruiterHr(**hr_info))
     session.commit()
     session.close()
@@ -198,18 +219,18 @@ def create_RecruiterHr():
 # create_RecruiterHr()
 
 # 创建招聘职位
-def create_RecruitmentPosition():
-    position_info = {
-        "company_id": 2,
-        "hr_id": 2,
-        "job_title": "无敌生化工程师222",
-        "work_province": "广东",
-        "work_city": "佛山",
-        "work_address": "深圳市南山区高新技术园粤海大道1号假的",
-        "education_requirements": "本科",
-        "salary_range": "100W/月薪",
-        "job_description": "2222222222222熟读唐诗三百首！左青龙，右白虎！生化技术无所不能！干干干！"
-    }
+def create_RecruitmentPosition(position_info):
+    # position_info = {
+    #     "company_id": 2,
+    #     "hr_id": 2,
+    #     "job_title": "无敌生化工程师222",
+    #     "work_province": "广东",
+    #     "work_city": "佛山",
+    #     "work_address": "深圳市南山区高新技术园粤海大道1号假的",
+    #     "education_requirements": "本科",
+    #     "salary_range": "100W/月薪",
+    #     "job_description": "2222222222222熟读唐诗三百首！左青龙，右白虎！生化技术无所不能！干干干！"
+    # }
     session.add(RecruitmentPosition(**position_info))
     session.commit()
     session.close()

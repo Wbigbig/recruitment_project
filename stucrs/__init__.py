@@ -45,7 +45,7 @@ def create_app():
         static_url_path = ''
     )
 
-    # 设置秘钥 生成session
+    # 设置密钥 生成session
     app.config['SECRET_KEY'] = 'recruitment'
 
     # 配置蓝图
@@ -55,11 +55,11 @@ def create_app():
     app.register_blueprint(blueprint=iuser, url_prefix='/iuser')
 
     # 配置login_manager 使用登录管理器管理会话
-    login_manager = LoginManager()
+    login_manager = LoginManager()  #初始化一个LoginManager类对象
     login_manager.session_protection = 'strong'
     login_manager.login_view = 'iuser.login'  # 登录视图
     login_manager.login_message = u"用户失效！"  # 快闪消息
-    login_manager.init_app(app=app)
+    login_manager.init_app(app=app)   #配置该对象
 
     # 这个callback函数用于reload User object，根据session中存储的user id
     # 提供user_loader的回调函数，主要是通过获取user对象存储到session中，自己实现最好启用缓存

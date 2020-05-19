@@ -322,4 +322,8 @@ def delivery_by_job_id(current_user, form_data):
         print(traceback.format_exc())
         return dRet(500, "投递异常")
 
-
+# 根据company_id 查找hr_id
+def search_hr_id_by_company_id(company_id):
+    hr = session.query(RecruiterHr).filter(RecruiterHr.company_id == company_id).first()
+    session.close()
+    return hr

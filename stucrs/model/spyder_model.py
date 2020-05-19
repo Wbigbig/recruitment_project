@@ -9,7 +9,7 @@
 数据库连接、表模型创建 爬虫表
 """
 
-from .model_table import *
+from stucrs.model.model_table import *
 
 # 爬取公司信息表
 class spyderCompany(Base):
@@ -54,6 +54,36 @@ def add_spyderCompany(company_info):
         session.close()
         print(traceback.format_exc())
         return None
+
+# 计算公司表总数，分页总数
+def get_total_ptotal_from_spyderCompany(pagesize):
+    try:
+        total = session.query(spyderCompany).count()
+        pagetotal = total // pagesize if total % pagesize == 0 else total // pagesize + 1
+        return total, pagetotal
+    except:
+        print(traceback.format_exc())
+        return
+
+# 获取公司表指定页码数据
+def get_spyder_company_by_page(page, pagesize, pagetotal):
+    """
+    根据pagesize分页返回指定page数据
+    :param page:
+    :param pagesize:
+    :return:
+    """
+    try:
+        if page < 1 or page > pagetotal:
+            print("页码异常")
+            return None
+        ret = session.query(spyderCompany).order_by(spyderCompany.company_id).limit(pagesize).offset((page - 1) * pagesize)
+        session.close()
+        return ret
+    except:
+        print(traceback.format_exc())
+        return
+
 
 # 首页搜索表
 class spyderSearchMain(Base):
@@ -176,6 +206,39 @@ def add_spyderRecruitmentPosition(job_info):
         session.close()
         print(traceback.format_exc())
         return None
+
+# 计算职位表总数，分页总数
+def get_total_ptotal_from_postiton(pagesize):
+    """
+    :param pagesize:单页数量
+    :return: total，totalpage
+    """
+    try:
+        total = session.query(spyderRecruitmentPosition).count()
+        pagetotal = total // pagesize if total % pagesize == 0 else total // pagesize + 1
+        return total, pagetotal
+    except:
+        print(traceback.format_exc())
+        return
+
+# 获取职位表指定页码数据
+def get_position_by_page(page, pagesize, pagetotal):
+    """
+    根据pagesize分页返回指定page数据
+    :param page:
+    :param pagesize:
+    :return:
+    """
+    try:
+        if page < 1 or page > pagetotal:
+            print("页码异常")
+            return None
+        ret = session.query(spyderRecruitmentPosition).order_by(spyderRecruitmentPosition.job_id).limit(pagesize).offset((page - 1) * pagesize)
+        session.close()
+        return ret
+    except:
+        print(traceback.format_exc())
+        return
 
 # drop_db_one(Applicant)
 # drop_db()
