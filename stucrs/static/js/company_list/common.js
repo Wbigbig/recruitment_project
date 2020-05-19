@@ -7,6 +7,12 @@ var search = function(){
 //导航栏切换
 $('.nav li:eq(1)').addClass("active");
 
+//重置每页数量
+$('#pagesize').change(function () {
+	var pagesize = $(this).val();
+	$("input[name='pagesize']").eq(0).val(pagesize);
+});
+
 //翻页栏切换
 var changePage = function(page){
 	//找到当前页
@@ -165,6 +171,9 @@ var init = function(){
 	//根据上一次查询的日期端，设置到文本框中
 	jqu.formItem('start_time','form_search').val(start_time);
 	jqu.formItem('end_time','form_search').val(end_time);
+	jqu.formItem('company_name','form_search').val(company_name);
+	jqu.formItem('company_industry','form_search').val(company_industry);
+	jqu.formItem('address','form_search').val(address);
 	
 	//新增/修改表单中的日期
 	jqu.formItem('fdate','form_am').datetimepicker({

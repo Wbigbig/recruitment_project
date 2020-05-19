@@ -10,11 +10,9 @@
 
 <script>
 //上一次查询的参数
-var start_time = '{{jobs_data.search_param.start_time}}';
-var end_time = '{{jobs_data.search_param.end_time}}';
-var company_industry = '{{ jobs_data.search_param.company_industry }}';
-var education_requirements = '{{ jobs_data.search_param.education_requirements }}';
-var work_city = '{{ jobs_data.search_param.work_city }}';
+var company_name = '{{companys_data.search_param.company_name}}';
+var company_industry = '{{ companys_data.search_param.company_industry }}';
+var address = '{{ companys_data.search_param.address }}';
 jqu.loadJs('/js/company_list/common.js');
 </script>
 {% endblock %}
@@ -44,8 +42,8 @@ jqu.loadJs('/js/company_list/common.js');
 
       <button type="button" class="btn btn-default" onclick="search()"><i class="fa fa-search"></i> 查询</button>
 
-      <input type="hidden" name="page" value="{{dm.page}}" />
-      <input type="hidden" name="pagesize" value="{{dm.pagesize}}" />
+      <input type="hidden" name="page" value="{{companys_data.search_param.page}}" />
+      <input type="hidden" name="pagesize" value="{{companys_data.search_param.pagesize}}" />
      </form>
     </div>
    </div>
@@ -54,7 +52,7 @@ jqu.loadJs('/js/company_list/common.js');
      <!-- 数据显示表格 -->
      <table class="table table-striped">
       <caption>
-       公司数据。第 {{dm.page}} / {{dm.totalpage}} 页，共 {{dm.total}} 条。
+       公司数据。第 {{companys_data.search_param.page}} / {{companys_data.data.page_total}} 页，共 {{companys_data.data.companys_total}} 条。
       </caption>
       <thead>
        <tr>
@@ -65,12 +63,12 @@ jqu.loadJs('/js/company_list/common.js');
        </tr>
       </thead>
       <tbody>
-        {% for row in dm.rows %}
+        {% for company in companys_data.data.companys_list %}
        <tr>
-        <td>{{row.code}}</td>
-        <td>{{row.name}}</td>
-        <td>{{row.birthday}}</td>
-        <td>{{row.age}}</td>
+        <td>{{company.company_name}}</td>
+        <td>{{company.company_type}}</td>
+        <td>{{company.company_industry}}</td>
+        <td>{{company.position_count}}</td>
        </tr>
 	   {% endfor %}
       <tr></tr>
@@ -79,10 +77,17 @@ jqu.loadJs('/js/company_list/common.js');
      <!-- 翻页，靠右，必须有页码的时候 -->
      <ul class="pagination">
 	    <li><a href="javascript:;" onclick="changePage(1)" data-toggle="tooltip" title="首页">&laquo;</a></li>
-		{% for pageno in dm.pagenumbers %}
-	    <li {% if pageno==dm.page %} class="active" {% endif %}><a href="javascript:;" onclick="changePage({{pageno}})">{{pageno}}</a></li>
+		{% for pageno in companys_data.data.pagenumbers %}
+	    <li {% if pageno==companys_data.search_param.page %} class="active" {% endif %}><a href="javascript:;" onclick="changePage({{pageno}})">{{pageno}}</a></li>
 	    {% endfor %}
-	    <li><a href="javascript:;" onclick="changePage({{dm.totalpage}})" data-toggle="tooltip" title="末页 共 {{dm.totalpage}} 页">&raquo;</a></li>
+	    <li><a href="javascript:;" onclick="changePage({{companys_data.data.page_total}})" data-toggle="tooltip" title="末页 共 {{companys_data.data.page_total}} 页">&raquo;</a></li>
+        <li style="float: right;">
+        <select id="pagesize" class="form-control" name="pagesize">
+            {% for p_size in companys_data.data.pagesize_list %}
+                <option value="{{ p_size }}" {% if p_size==companys_data.search_param.pagesize %}selected{% endif %}>{{ p_size }}条/页</option>
+            {% endfor %}
+        </select>
+        </li>
 	</ul>
 
     </div>

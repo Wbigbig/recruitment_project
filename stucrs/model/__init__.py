@@ -362,7 +362,7 @@ def search_company_list(current_user, form_data):
                     tem_company[k]=v.strftime("%Y-%m-%d %H:%M")
                     continue
                 tem_company[k] = v
-            tem_company['position_count'] = company.rec_pos.count()
+            tem_company['position_count'] = len(company.rec_pos)
             companys_list_ret.append(tem_company)
         # 翻页列表
         pagenumbers = []
