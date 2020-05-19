@@ -334,6 +334,58 @@ def search_job_list(current_user, form_data):
         print(traceback.format_exc())
         return dRet(500, "查询职位列表异常")
 
+# 查询公司列表company_list
+def search_company_list(current_user, form_data):
+    try:
+        print("查询公司列表操作", form_data)
+        search_ = []
+        if form_data['company_name']:
+            search_.append(RecruiterCompany.company_name.like('%{0}%'.format(form_data['company_name'])))
+        if form_data['company_industry']:
+            search_.append(RecruiterCompany.company_industry.like('%{0}%'.format(form_data['company_industry'])))
+        if form_data['address']:
+            search_.append(RecruiterCompany.address.like('%{0}%'.format(form_data['address'])))
+        # 获取总数
+        companys_total = session.query(RecruiterCompany).filter(*search_).count()
+        # 计算总页数
+        page_total = companys_total // form_data['pagesize'] if companys_total % form_data['pagesize'] == 0 else (companys_total // form_data['pagesize'] + 1)
+        # 根据分页查询数据
+        companys_list = session.query(RecruiterCompany).filter(*search_)\
+            .order_by(RecruiterCompany.create_time.desc())\
+            .limit(form_data['pagesize'])\
+            .offset((form_data['page']-1)*form_data['pagesize'])
+        companys_list_ret = []
+        for company in companys_list:
+            tem_company = {}
+            for k,v in vars(company).items():
+                if k == 'create_time':
+                    tem_company[k]=v.strftime("%Y-%m-%d %H:%M")
+                    continue
+                tem_company[k] = v
+            tem_company['position_count'] = company.rec_pos.count()
+            companys_list_ret.append(tem_company)
+        # 翻页列表
+        pagenumbers = []
+        for i in range(form_data['page'] - 3, form_data['page'] + 4):
+            if i < 1:
+                continue
+            if i > page_total:
+                continue
+            pagenumbers.append(i)
+        print(companys_list_ret, len(companys_list_ret))
+        companys_info_ret = {
+            'companys_total': companys_total,
+            'page_total': page_total,
+            'pagenumbers': pagenumbers,
+            'companys_list': companys_list_ret,
+            'pagesize_list': [20, 30, 50, 100]  # 单页数量
+        }
+        session.close()
+        return dRet(200, companys_info_ret, search_param=form_data)
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "查询公司列表异常")
+
 # 进行投递操作
 def delivery_by_job_id(current_user, form_data):
     try:

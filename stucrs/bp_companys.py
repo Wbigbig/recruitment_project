@@ -2,156 +2,48 @@
 # -*- coding: utf-8 -*-
 # Author   :
 
-# 学生信息蓝图，构建在：/stu
+# 公司信息蓝图，构建在：/stu
 
-from flask import Blueprint,request,render_template
-from .project_utils import get_db_path,datestr_to_timestamp,to_json
-import sqlite3
+from flask import Blueprint,request,render_template,url_for
+from flask_login import current_user
+
+from stucrs.model import search_company_list
+from .project_utils import dRet
 
 companys = Blueprint('companys',__name__)
 
+# 显示数据库表 RecruitmentCompany 中的记录
 @companys.route('/list',methods=['GET','POST'])
 def list():
+	form_data = {
+		'company_name': '',				# 公司名
+		'company_industry': '',			# 行业
+		'address': '',					# 公司地点
+		'page': '',  					# 分页
+		'pagesize': ''  				# 单页数量
+	}
+	# 查询post表单初始化字段
 	if request.method=='POST':
-		kw = request.form.get('kw', '')
-		age_min = request.form.get('age_min', '')
-		age_max = request.form.get('age_max', '')
-
-		# 翻页的两项
-		page = request.form.get('page') if ('page' in request.form) else ''
-		pagesize = request.form.get('pagesize') if ('pagesize' in request.form) else ''
-	else:
-		kw = ''
-		age_min = ''
-		age_max = ''
-
-		page=''
-		pagesize=''
-
-	# 年龄字符串转为整形，进行数据库的查询
-	try:
-		age_min_i = int(age_min) if age_min != '' else 0
-		age_max_i = int(age_max) if age_max != '' else 0
-	except:
-		age_min_i = 0
-		age_max_i = 0
+		for k in form_data.keys():
+			form_data[k] = request.form.get(k, '')
 
 	# 分页的转换单独写
 	try:
-		page = int(page)
-		pagesize = int(pagesize)
+		form_data['page'] = int(form_data['page'])
+		if form_data['page'] < 1:
+			form_data['page'] = 1
 	except:
-		page = 1
-		pagesize = 10
+		form_data['page'] = 1
+	try:
+		form_data['pagesize'] = int(form_data['pagesize'])
+	except:
+		form_data['pagesize'] = 20
 
-	# 将页面上需要的数据统一放到数据模型 data modal 中,字典
-	dm = {}
-	dm['kw'] = kw
-	dm['age_min'] = age_min
-	dm['age_max'] = age_max
-	dm['page'] = page
-	dm['pagesize'] = pagesize
-
-	conn = sqlite3.connect(get_db_path())
-	cursor = conn.cursor()
-
-	# 定义一个查询条件的字典
-	dt_conn = {}
-
-	# 翻页需要先找到满足条件的记录有多少条
-	sql = '''
-		select count(*) from tstudent where 1=1
-		'''
-
-
-	if kw != '':
-		sql += ' and (name like :kw)'
-		dt_conn['kw'] = '%' + kw + '%'
-	if age_min_i > 0:
-		sql += ' and age>=:age_min_i'
-		dt_conn['age_min_i'] = age_min_i
-	if age_max_i > 0:
-		sql += ' and age<=:age_max_i'
-		dt_conn['age_max_i'] = age_max_i
-
-	print(dt_conn)
-
-	result_one = cursor.execute(sql, dt_conn).fetchone()
-	# 满足条件的记录总数
-	total = result_one[0] if (result_one is not None) else 0
-	dm['total'] = total
-
-	# 本页数据内容的查询，当 total>0 时进行
-	if total > 0:
-
-		sql = '''
-			select id,code,name,birthday,age,institute,fclass from tstudent where 1=1
-			'''
-
-		if kw != '':
-			sql += ' and (name like :kw)'
-			dt_conn['kw'] = '%' + kw + '%'
-		if age_min_i > 0:
-			sql += ' and age>=:age_min_i'
-			dt_conn['age'] = age_min_i
-		if age_max_i > 0:
-			sql += ' and age<=:age_max_i'
-			dt_conn['age'] = age_max_i
-
-		# 根据时间 ftime 排序
-		sql += ' order by age desc'
-
-		# 加上翻页的sql
-		sql += ' limit ' + str(pagesize) + ' offset ' + str((page - 1) * pagesize)
-
-		print(sql)
-
-		result = cursor.execute(sql, dt_conn).fetchall()
-		print(result)
-
-		# 将内部的元组转换为字典
-		# 将表字段使用列表形式保存，便于后续的循环匹配
-		rows = []
-		for line in result:
-			record = {}
-			record['id'] = line[0]
-			record['code'] = line[1]
-			record['name'] = line[2]
-			record['birthday'] = line[3]
-			record['age'] = line[4]
-			record['institute'] = line[5]
-			record['fclass'] = line[6]
-
-			rows.append(record)
-
-		dm['rows'] = rows
-
-		# 计算总共有多少页
-		totalpage = total // pagesize
-		if total % pagesize != 0:
-			totalpage += 1
-		dm['totalpage'] = totalpage
-
-		# 翻页显示前三后三，需要使用列表
-		pagenumbers = []
-		for i in range(page - 3, page + 4):
-			if i < 1:
-				continue
-			if i > totalpage:
-				continue
-			pagenumbers.append(i)
-
-		print(pagenumbers)
-
-		dm['pagenumbers'] = pagenumbers
-
-	# 关闭数据库
-	conn.close()
-
-	print(dm)
-
-
-	return render_template('stu_list.html', dm=dm)
+	# 查询数据
+	companys_data = search_company_list(current_user, form_data)
+	import pprint
+	pprint.pprint(companys_data)
+	return render_template('tcompany_list.html', companys_data=companys_data)
 
 
 # 增加修改前，获得数据内容

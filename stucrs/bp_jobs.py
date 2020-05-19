@@ -5,10 +5,10 @@
 # 蓝图，职位列表模块，/jobs
 
 from flask import Blueprint,request,render_template,url_for
-from flask_login import login_user,logout_user,login_required,current_user
+from flask_login import current_user
 
 from stucrs.model import search_job_list, delivery_by_job_id, search_job_details_by_job_id, heart_by_job_id
-from .project_utils import get_db_path, datestr_to_timestamp, to_json, dRet
+from .project_utils import dRet
 
 jobs = Blueprint('jobs',__name__)
 

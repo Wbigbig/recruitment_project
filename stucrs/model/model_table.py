@@ -83,6 +83,7 @@ class RecruiterCompany(Base):
     legal_representative = Column(String(50))
     company_profile = Column(Text)
     company_pic = Column(Text)
+    company_type = Column(String(50))
     create_time = Column(DateTime, default=datetime.datetime.now)
 
 def get_total_ptotal_from_RecruiterCompany(pagesize):

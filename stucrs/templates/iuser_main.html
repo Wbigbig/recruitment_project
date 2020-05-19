@@ -273,7 +273,7 @@ jqu.loadJs('/js/iuser_main/common.js');
 <div class="row">
 <div class="col-sm-12">
  <!-- 数据显示表格 -->
- <table class="table table-striped" style="height: 500px;">
+ <table class="table table-striped" style="height: 300px;">
   <thead>
    <tr>
     <th>公司</th>
@@ -288,7 +288,7 @@ jqu.loadJs('/js/iuser_main/common.js');
   </thead>
     <tbody>
     {% for experience in iu_work_experience.data %}
-       <tr>
+       <tr style="height: 0">
         <td>{{experience.company_name}}</td>
         <td>{{experience.company_industry}}</td>
         <td>{{experience.entry_time}}</td>
@@ -327,7 +327,7 @@ jqu.loadJs('/js/iuser_main/common.js');
 <div class="row">
 <div class="col-sm-12">
  <!-- 数据显示表格 -->
- <table class="table table-striped" style="height: 500px;">
+ <table class="table table-striped" style="height: 300px;">
   <thead>
    <tr>
     <th>职位名</th>
@@ -341,7 +341,7 @@ jqu.loadJs('/js/iuser_main/common.js');
   </thead>
     <tbody>
     {% for position_heart in iu_position_heart %}
-       <tr>
+       <tr style="height: 0">
         <td><a href="{{url_for('jobs.details',id=position_heart.job_id)}}" target="_blank">{{position_heart.job_title}}</a></td>
         <td>{{position_heart.company_name}}</td>
         <td>{{position_heart.work_city}}</td>
@@ -349,7 +349,6 @@ jqu.loadJs('/js/iuser_main/common.js');
         <td>{{position_heart.hr_name}}</td>
         <td>{{position_heart.create_time}}</td>
         <td>
-
             <a href="javascript:;" onclick="heart_remove({{position_heart.job_id}})"><i class="fa fa-heartbeat"></i> 取消收藏</a>
 
         </td>

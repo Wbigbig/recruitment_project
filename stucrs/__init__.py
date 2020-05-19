@@ -4,10 +4,10 @@
 
 # 项目的说明
 
-from flask import Flask,request,render_template
+from flask import Flask
 from flask_login import LoginManager
 
-from .project_utils import get_db_path,get_project_dir,datestr_to_timestamp,to_json
+from .project_utils import get_project_dir
 
 from .bp_main import main
 from .bp_jobs import jobs
