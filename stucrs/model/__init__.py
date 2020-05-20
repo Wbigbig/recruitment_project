@@ -7,19 +7,21 @@
 增删改查，执行数据操作
 """
 
-from flask_login import UserMixin
-from .model_table import *
-from stucrs.project_utils import dRet
+from flask_login import UserMixin  #User类所继承的类
+from .model_table import *  #导入model_table的所有模块
+from stucrs.project_utils import dRet  #在stucrs.project_utils导入dRet模块，这个是自定义返回信息的
 
-import traceback
+import traceback  #异常信息模块
 
 # 用户注册操作
 def create_applicant_user(u_info):
     try:
+        # Applicant表 增加 前端传过来的u_info数据
         session.add(Applicant(**u_info))
-        session.commit()
-        session.close()
-        print("applicant_add", u_info)
+        session.commit() # 提交数据
+        session.close()     #关闭会话
+        print("applicant_add", u_info)  #后台打印出参数
+        # 返回一个json给前端，前端根据 status 的状态码，进行对应的操作
         return dRet(200, "注册成功", redirect_url='/iuser/main/')
     except:
         print(traceback.format_exc())
@@ -99,9 +101,11 @@ class User(UserMixin):
             return
 
 # 用户个人信息更新操作
+# 接收前端传递过来的参数，对用户个人信息进行修改操作
 def update_applicant_user(current_user, iu_param):
     try:
         print("更新用户信息", current_user.user_id, iu_param)
+        # 在Applicant表中过滤表字段user_id == current_user.user_id的，找到数据后更新数据，按字典值更新
         session.query(Applicant).filter(Applicant.user_id == current_user.user_id).update(iu_param)
         session.commit()
         session.close()
@@ -110,10 +114,11 @@ def update_applicant_user(current_user, iu_param):
         print(traceback.format_exc())
         return dRet(500, "更新异常")
 
-# 获取用户投递记录
+# 根据获取到的当前用户来获取用户投递记录
 def get_delivery_record(current_user):
     try:
         print("获取用户投递记录", current_user.user_id)
+        # 从DeliveryRecord表中查询过滤表用户id为当前用户的id
         records = session.query(DeliveryRecord).filter(DeliveryRecord.user_id == current_user.user_id).order_by(DeliveryRecord.delivery_time.desc()).all()
         delivery_record_list = []
         for record in records:
@@ -242,6 +247,7 @@ def save_work_experience(current_user, form_data):
         return dRet(500, "新增或保存工作经历异常")
 
 # 删除用户工作经历
+#接收前端发送过来参数，并在数据库中寻找该参数所对应的id然后删除
 def remove_work_experience(current_user, form_data):
     try:
         print("执行删除工作经历操作", current_user.user_id, form_data)
