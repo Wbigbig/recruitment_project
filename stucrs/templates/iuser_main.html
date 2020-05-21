@@ -1,430 +1,437 @@
 {% extends 'tmpl_basic1.html' %}
 
 {% block my_css %}
-<link href="/bootstrap-3.3.5-dist/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-<link rel="stylesheet" href="/css/iuser_main/iu_info/reset.css"> <!-- CSS reset -->
-<link rel="stylesheet" href="/css/iuser_main/iu_info/style.css">
+    <link href="/bootstrap-3.3.5-dist/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/iuser_main/iu_info/reset.css"> <!-- CSS reset -->
+    <link rel="stylesheet" href="/css/iuser_main/iu_info/style.css">
 
-<link rel="stylesheet" type="text/css" href="/css/iuser_main/iu_delivery/demo.css" />
+    <link rel="stylesheet" type="text/css" href="/css/iuser_main/iu_delivery/demo.css"/>
 
 {% endblock %}
 
 {% block my_js %}
-<script src="/js/iuser_main/iu_info/modernizr.js"></script>
-<script src="/js/iuser_main/iu_info/jquery-2.1.1.js"></script>
-<script src="/js/iuser_main/iu_info/main.js"></script> <!-- Resource jQuery -->
+    <script src="/js/iuser_main/iu_info/modernizr.js"></script>
+    <script src="/js/iuser_main/iu_info/jquery-2.1.1.js"></script>
+    <script src="/js/iuser_main/iu_info/main.js"></script> <!-- Resource jQuery -->
 
-<script src="/js/iuser_main/iu_delivery/jquery-1.11.0.min.js" type="text/javascript"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
-<script src="https://unpkg.com/imagesloaded@4.1.4/imagesloaded.pkgd.min.js"></script>
-<script src="/js/iuser_main/iu_delivery/demo.js"></script>
-<script src="/bootstrap-3.3.5-dist/js/bootstrap-datetimepicker.min.js"></script>
-<script	src="/bootstrap-3.3.5-dist/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
-<script src="/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="/js/iuser_main/iu_delivery/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
+    <script src="https://unpkg.com/imagesloaded@4.1.4/imagesloaded.pkgd.min.js"></script>
+    <script src="/js/iuser_main/iu_delivery/demo.js"></script>
+    <script src="/bootstrap-3.3.5-dist/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/bootstrap-3.3.5-dist/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
 
-<script>
-jqu.loadJs('/js/iuser_main/common.js');
-</script>
+    <script>
+        jqu.loadJs('/js/iuser_main/common.js');
+    </script>
 {% endblock %}
 
 
 {% block my_body %}
 
-{#用户卡片iu_info#}
-<div class="cd-pricing-container cd-full-width cd-secondary-theme">
+    {#用户卡片iu_info#}
+    <div class="cd-pricing-container cd-full-width cd-secondary-theme">
 
 
-    <ul class="cd-pricing-list cd-bounce-invert">
-        <li>
-            <ul class="cd-pricing-wrapper">
-                <li data-type="monthly" class="is-visible">
-                    <header class="cd-pricing-header">
-                        <h2>个人卡片</h2>
+        <ul class="cd-pricing-list cd-bounce-invert">
+            <li>
+                <ul class="cd-pricing-wrapper">
+                    <li data-type="monthly" class="is-visible">
+                        <header class="cd-pricing-header">
+                            <h2>个人卡片</h2>
 
-                        <div class="cd-price">
-                            <span class="cd-value">{{ iu.real_name }}</span>
+                            <div class="cd-price">
+                                <span class="cd-value">{{ iu.real_name }}</span>
+                            </div>
+                        </header> <!-- .cd-pricing-header -->
+
+                        <div class="cd-pricing-body">
+                            <ul class="cd-pricing-features">
+                                <li>{{ iu.user_name }}</li>
+                                <li>{{ iu.phone }}</li>
+                                <li>{{ iu.email }}</li>
+                                <li>{{ iu.birthday }}</li>
+                                <li>{{ iu.city }}</li>
+                                <li>{{ iu.current_identity }}</li>
+                                <li>{{ iu.industry }}</li>
+                                <li>{{ iu.personal_experience }}</li>
+                                <li>{{ iu.educational_experience }}</li>
+                            </ul>
+                        </div> <!-- .cd-pricing-body -->
+
+                        <footer class="cd-pricing-footer">
+                            <input type="radio" name="duration" value="yearly" id="yearly">
+                            <label class="cd-select" for="yearly">修改信息</label>
+                        </footer> <!-- .cd-pricing-footer -->
+                    </li>
+
+                    <li data-type="yearly" class="is-hidden">
+                        <header class="cd-pricing-header">
+                            <h2>修改卡片</h2>
+
+                            <div class="cd-price">
+                                <span class="cd-value"><input type="text" value="{{ iu.real_name }}" placeholder="姓名"></span>
+                            </div>
+                        </header> <!-- .cd-pricing-header -->
+
+                        <div class="cd-pricing-body">
+                            <ul class="cd-pricing-features">
+                                <li><input type="text" value="{{ iu.user_name }}" placeholder="用户名"></li>
+                                <li><input type="text" value="{{ iu.phone }}" placeholder="手机号" readonly></li>
+                                <li><input type="text" value="{{ iu.email }}" placeholder="电子邮箱" readonly></li>
+                                <li><input type="text" value="{{ iu.birthday }}" placeholder="生日"></li>
+                                <li><input type="text" value="{{ iu.city }}" placeholder="所在城市"></li>
+                                <li><input type="text" value="{{ iu.current_identity }}" placeholder="学生/职场人士"></li>
+                                <li><input type="text" value="{{ iu.industry }}" placeholder="行业"></li>
+                                <li><input type="text" value="{{ iu.personal_experience }}" placeholder="个人标签"></li>
+                                <li><input type="text" value="{{ iu.educational_experience }}" placeholder="教育/学校/学位"></li>
+                            </ul>
+                        </div> <!-- .cd-pricing-body -->
+
+                        <footer class="cd-pricing-footer">
+                            <input type="radio" name="duration" value="monthly" id="monthly" checked>
+                            <label class="cd-select" for="monthly">提交信息</label>
+                        </footer> <!-- .cd-pricing-footer -->
+                    </li>
+                </ul> <!-- .cd-pricing-wrapper -->
+            </li>
+        </ul> <!-- .cd-pricing-list -->
+
+    </div> <!-- .cd-pricing-container -->
+
+    {#投递记录#}
+    <div class="deliver-container">
+        <!-- coidea:header START -->
+        <header>
+            <div class="header-inner">
+                <h1>投递记录</h1>
+            </div>
+        </header>
+        <!-- coidea:header END -->
+
+        <!-- coidea:table-holder START -->
+        <section class="table-wrapper">
+
+            <!-- coidea:table-holder:table START -->
+            <table>
+
+                <!-- coidea:table-holder:table:head START -->
+                <thead>
+                <tr>
+                    <th></th>
+                    {#            <th class="trigger"><p>Basic</p><span>plus</span></th>#}
+                    {% for rec in iu_delivery_record %}
+                        <th class="trigger"><p>{{ rec.company_name }}</p></th>
+                    {% endfor %}
+
+                </tr>
+                </thead>
+                <!-- coidea:table-holder:table:head END -->
+
+                <!-- coidea:table-holder:table:body START -->
+                <tbody>
+
+                <!-- coidea:table-holder:table:body:row START -->
+                <tr>
+                    <td><p><strong>职位</strong></p>
+                        <p>Position</p></td>
+                    {% for rec in iu_delivery_record %}
+                        <td><p>{{ rec.job_title }}</p> <span>-</span></td>
+                    {% endfor %}
+
+                </tr>
+                <!-- coidea:table-holder:table:body:row END -->
+
+                <!-- coidea:table-holder:table:body:row START -->
+                <tr>
+                    <td><p><strong>学历</strong></p>
+                        <p>Education</p></td>
+                    {% for rec in iu_delivery_record %}
+                        <td>
+                            {% if rec.data==1 %}
+                                <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                            {% else %}
+                                <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                            {% endif %}
+                            {#                    <p>1GB *</p>#}
+                            <span>{{ rec.education_requirements }}</span>
+                        </td>
+                    {% endfor %}
+
+                </tr>
+                <!-- coidea:table-holder:table:body:row END -->
+
+                <!-- coidea:table-holder:table:body:row START -->
+                <tr>
+                    <td><p><strong>薪资</strong></p>
+                        <p>Salary</p></td>
+                    {% for rec in iu_delivery_record %}
+                        <td>
+                            {% if rec.data==1 %}
+                                <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                            {% else %}
+                                <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                            {% endif %}
+                            {#                    <p>1GB *</p>#}
+                            <span>{{ rec.salary_range }}</span>
+                        </td>
+                    {% endfor %}
+                </tr>
+                <!-- coidea:table-holder:table:body:row END -->
+
+                <!-- coidea:table-holder:table:body:row START -->
+                <tr>
+                    <td><p><strong>职能</strong></p>
+                        <p>Function</p></td>
+                    {% for rec in iu_delivery_record %}
+                        <td>
+                            {% if rec.data==1 %}
+                                <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                            {% else %}
+                                <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                            {% endif %}
+                            {#                    <p>1GB *</p>#}
+                            <span>{{ rec.job_description|replace('\n','<br>')|safe }}</span>
+                        </td>
+                    {% endfor %}
+                </tr>
+                <!-- coidea:table-holder:table:body:row END -->
+
+                <!-- coidea:table-holder:table:body:row START -->
+                <tr>
+                    <td><p><strong>地址</strong></p>
+                        <p>Address</p></td>
+                    {% for rec in iu_delivery_record %}
+                        <td>
+                            {% if rec.data==1 %}
+                                <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                            {% else %}
+                                <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                            {% endif %}
+                            {#                    <p>1GB *</p>#}
+                            <span>{{ rec.work_address }}</span>
+                        </td>
+                    {% endfor %}
+                </tr>
+                <!-- coidea:table-holder:table:body:row END -->
+
+                <!-- coidea:table-holder:table:body:row START -->
+                <tr>
+                    <td><p><strong>投递时间</strong></p>
+                        <p>Delivery Time</p></td>
+                    {% for rec in iu_delivery_record %}
+                        <td>
+                            {% if rec.data==1 %}
+                                <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                            {% else %}
+                                <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                            {% endif %}
+                            {#                    <p>1GB *</p>#}
+                            <span>{{ rec.delivery_time }}</span>
+                        </td>
+                    {% endfor %}
+                </tr>
+                <!-- coidea:table-holder:table:body:row END -->
+
+                <!-- coidea:table-holder:table:body:row START -->
+                <tr>
+                    <td><p><strong>状态</strong></p>
+                        <p>State(Yes/No)</p></td>
+                    {% for rec in iu_delivery_record %}
+                        <td>
+                            {% if rec.data==1 %}
+                                <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                            {% else %}
+                                <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                            {% endif %}
+                            {#                    <p>1GB *</p>#}
+                            <span>{{ rec.state }}</span>
+                        </td>
+                    {% endfor %}
+                </tr>
+                <!-- coidea:table-holder:table:body:row END -->
+
+                </tbody>
+                <!-- coidea:table-holder:table:body END -->
+
+            </table>
+            <!-- coidea:table-holder:table END -->
+
+        </section>
+        <!-- coidea:table-holder END -->
+    </div>
+
+    {#工作经历#}
+    <div class="container" style="width:95%;">
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- 查询表单 -->
+                <form id="form_search" class="form-inline" role="form" method="get" action="{{ url_for('iuser.main') }}">
+
+                    <div class="form-group">
+                        <label>个人工作经历</label>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" onclick="presave(0)"><i class="fa fa-plus"></i> 新增</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- 数据显示表格 -->
+                <table class="table table-striped" style="height: 300px;">
+                    <thead>
+                    <tr>
+                        <th>公司</th>
+                        <th>行业</th>
+                        <th>入职时间</th>
+                        <th>离职时间</th>
+                        <th>职位名称</th>
+                        <th>所属部门</th>
+                        <th width="45%">工作内容</th>
+                        <th width="150">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for experience in iu_work_experience.data %}
+                        <tr style="height: 0">
+                            <td>{{ experience.company_name }}</td>
+                            <td>{{ experience.company_industry }}</td>
+                            <td>{{ experience.entry_time }}</td>
+                            <td>{{ experience.departure_time }}</td>
+                            <td>{{ experience.job_title }}</td>
+                            <td>{{ experience.department }}</td>
+                            <td style="word-wrap:break-word;word-break:break-all;white-space: pre-line;">{{ experience.job_content }}</td>
+                            <td>
+                                <a href="javascript:;" onclick="presave({{ experience.we_id }})"><i class="fa fa-edit"></i> 修改</a>
+                                &nbsp;
+                                <a href="javascript:;" onclick="remove({{ experience.we_id }})"><i class="fa fa-remove"></i> 删除</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div> <!-- container 结束 -->
+
+    {#收藏记录#}
+    <div class="container" style="width:95%;">
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- 查询表单 -->
+                <form id="form_search" class="form-inline" role="form" method="get" action="{{ url_for('iuser.main') }}">
+
+                    <div class="form-group">
+                        <label>我的收藏</label>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- 数据显示表格 -->
+                <table class="table table-striped" style="height: 300px;">
+                    <thead>
+                    <tr>
+                        <th>职位名</th>
+                        <th>公司名</th>
+                        <th>工作地点</th>
+                        <th>薪资</th>
+                        <th>发布人</th>
+                        <th>发布时间</th>
+                        <th width="150">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for position_heart in iu_position_heart %}
+                        <tr style="height: 0">
+                            <td><a href="{{ url_for('jobs.details',id=position_heart.job_id) }}" target="_blank">{{ position_heart.job_title }}</a></td>
+                            <td><a href="{{ url_for('companys.details',id=position_heart.company_id) }}" target="_blank">{{ position_heart.company_name }}</a></td>
+                            <td>{{ position_heart.work_city }}</td>
+                            <td>{{ position_heart.salary_range }}</td>
+                            <td>{{ position_heart.hr_name }}</td>
+                            <td>{{ position_heart.create_time }}</td>
+                            <td>
+                                <a href="javascript:;" onclick="heart_remove({{ position_heart.job_id }})"><i class="fa fa-heartbeat"></i> 取消收藏</a>
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div> <!-- container 结束 -->
+
+
+    <!-- 模态框（Modal）新增/修改工作经历 -->
+    <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">新增/修改 工作经历</h4>
+                </div>
+                <div class="modal-body">
+
+                    <form role="form" id="form_am">
+
+                        <div class="form-group">
+                            <label>公司</label>
+                            <input type="text" class="form-control" name="company_name" placeholder="请输入公司名称">
                         </div>
-                    </header> <!-- .cd-pricing-header -->
 
-                    <div class="cd-pricing-body">
-                        <ul class="cd-pricing-features">
-                            <li>{{ iu.user_name }}</li>
-                            <li>{{ iu.phone }}</li>
-                            <li>{{ iu.email }}</li>
-                            <li>{{ iu.birthday }}</li>
-                            <li>{{ iu.city }}</li>
-                            <li>{{ iu.current_identity }}</li>
-                            <li>{{ iu.industry }}</li>
-                            <li>{{ iu.personal_experience }}</li>
-                            <li>{{ iu.educational_experience }}</li>
-                        </ul>
-                    </div> <!-- .cd-pricing-body -->
-
-                    <footer class="cd-pricing-footer">
-                        <input type="radio" name="duration" value="yearly" id="yearly">
-                        <label class="cd-select" for="yearly">修改信息</label>
-                    </footer> <!-- .cd-pricing-footer -->
-                </li>
-
-                <li data-type="yearly" class="is-hidden">
-                    <header class="cd-pricing-header">
-                        <h2>修改卡片</h2>
-
-                        <div class="cd-price">
-                            <span class="cd-value"><input type="text" value="{{ iu.real_name }}" placeholder="姓名"></span>
+                        <div class="form-group">
+                            <label>行业</label>
+                            <input type="text" class="form-control" name="company_industry" placeholder="请输入公司行业">
                         </div>
-                    </header> <!-- .cd-pricing-header -->
 
-                    <div class="cd-pricing-body">
-                        <ul class="cd-pricing-features">
-                            <li><input type="text" value="{{ iu.user_name }}" placeholder="用户名"></li>
-                            <li><input type="text" value="{{ iu.phone }}" placeholder="手机号" readonly></li>
-                            <li><input type="text" value="{{ iu.email }}" placeholder="电子邮箱" readonly></li>
-                            <li><input type="text" value="{{ iu.birthday }}" placeholder="生日"></li>
-                            <li><input type="text" value="{{ iu.city }}" placeholder="所在城市"></li>
-                            <li><input type="text" value="{{ iu.current_identity }}" placeholder="学生/职场人士"></li>
-                            <li><input type="text" value="{{ iu.industry }}" placeholder="行业"></li>
-                            <li><input type="text" value="{{ iu.personal_experience }}" placeholder="个人标签"></li>
-                            <li><input type="text" value="{{ iu.educational_experience }}" placeholder="教育/学校/学位"></li>
-                        </ul>
-                    </div> <!-- .cd-pricing-body -->
+                        <div class="form-group">
+                            <label>入职时间</label>
+                            <input type="text" class="form-control" name="entry_time" placeholder="请输入入职时间 YYYY-MM">
+                        </div>
 
-                    <footer class="cd-pricing-footer">
-                        <input type="radio" name="duration" value="monthly" id="monthly" checked>
-                        <label class="cd-select" for="monthly">提交信息</label>
-                    </footer> <!-- .cd-pricing-footer -->
-                </li>
-            </ul> <!-- .cd-pricing-wrapper -->
-        </li>
-    </ul> <!-- .cd-pricing-list -->
+                        <div class="form-group">
+                            <label>离职时间</label>
+                            <input type="text" class="form-control" name="departure_time" placeholder="请输入离职时间 YYYY-MM">
+                        </div>
 
-</div> <!-- .cd-pricing-container -->
+                        <div class="form-group">
+                            <label>职位名称</label>
+                            <input type="text" class="form-control" name="job_title" placeholder="请输入职位名称">
+                        </div>
 
-{#投递记录#}
-<div class="deliver-container">
-    <!-- coidea:header START -->
-    <header>
-      <div class="header-inner">
-        <h1>投递记录</h1>
-      </div>
-    </header>
-    <!-- coidea:header END -->
+                        <div class="form-group">
+                            <label>所属部门</label>
+                            <input type="text" class="form-control" name="department" placeholder="请输入所属部门">
+                        </div>
 
-    <!-- coidea:table-holder START -->
-    <section class="table-wrapper">
+                        <div class="form-group">
+                            <label>工作内容</label>
+                            <textarea class="form-control" name="job_content" placeholder="请简述工作内容" style="resize: none;height:150px;"></textarea>
+                        </div>
 
-      <!-- coidea:table-holder:table START -->
-      <table>
-
-        <!-- coidea:table-holder:table:head START -->
-        <thead>
-          <tr>
-            <th></th>
-{#            <th class="trigger"><p>Basic</p><span>plus</span></th>#}
-              {% for rec in iu_delivery_record %}
-                <th class="trigger"><p>{{ rec.company_name }}</p></th>
-              {% endfor %}
-
-          </tr>
-        </thead>
-        <!-- coidea:table-holder:table:head END -->
-
-        <!-- coidea:table-holder:table:body START -->
-        <tbody>
-
-          <!-- coidea:table-holder:table:body:row START -->
-          <tr>
-            <td><p><strong>职位</strong></p><p>Position</p></td>
-              {% for rec in iu_delivery_record %}
-                <td><p>{{ rec.job_title }}</p> <span>-</span></td>
-              {% endfor %}
-
-          </tr>
-          <!-- coidea:table-holder:table:body:row END -->
-
-          <!-- coidea:table-holder:table:body:row START -->
-          <tr>
-            <td><p><strong>学历</strong></p><p>Education</p></td>
-              {% for rec in iu_delivery_record %}
-                <td>
-                    {% if rec.data==1 %}
-                        <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
-                    {% else %}
-                        <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
-                    {% endif %}
-{#                    <p>1GB *</p>#}
-                    <span>{{ rec.education_requirements }}</span>
-                </td>
-              {% endfor %}
-
-          </tr>
-          <!-- coidea:table-holder:table:body:row END -->
-
-          <!-- coidea:table-holder:table:body:row START -->
-          <tr>
-            <td><p><strong>薪资</strong></p><p>Salary</p></td>
-              {% for rec in iu_delivery_record %}
-                <td>
-                    {% if rec.data==1 %}
-                        <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
-                    {% else %}
-                        <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
-                    {% endif %}
-{#                    <p>1GB *</p>#}
-                    <span>{{ rec.salary_range }}</span>
-                </td>
-              {% endfor %}
-          </tr>
-          <!-- coidea:table-holder:table:body:row END -->
-
-          <!-- coidea:table-holder:table:body:row START -->
-          <tr>
-            <td><p><strong>职能</strong></p><p>Function</p></td>
-              {% for rec in iu_delivery_record %}
-                <td>
-                    {% if rec.data==1 %}
-                        <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
-                    {% else %}
-                        <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
-                    {% endif %}
-{#                    <p>1GB *</p>#}
-                    <span>{{ rec.job_description|replace('\n','<br>')|safe }}</span>
-                </td>
-              {% endfor %}
-          </tr>
-          <!-- coidea:table-holder:table:body:row END -->
-
-          <!-- coidea:table-holder:table:body:row START -->
-          <tr>
-            <td><p><strong>地址</strong></p><p>Address</p></td>
-              {% for rec in iu_delivery_record %}
-                <td>
-                    {% if rec.data==1 %}
-                        <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
-                    {% else %}
-                        <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
-                    {% endif %}
-{#                    <p>1GB *</p>#}
-                    <span>{{ rec.work_address }}</span>
-                </td>
-              {% endfor %}
-          </tr>
-          <!-- coidea:table-holder:table:body:row END -->
-
-          <!-- coidea:table-holder:table:body:row START -->
-          <tr>
-            <td><p><strong>投递时间</strong></p><p>Delivery Time</p></td>
-              {% for rec in iu_delivery_record %}
-                <td>
-                    {% if rec.data==1 %}
-                        <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
-                    {% else %}
-                        <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
-                    {% endif %}
-{#                    <p>1GB *</p>#}
-                    <span>{{ rec.delivery_time }}</span>
-                </td>
-              {% endfor %}
-          </tr>
-          <!-- coidea:table-holder:table:body:row END -->
-
-          <!-- coidea:table-holder:table:body:row START -->
-          <tr>
-            <td><p><strong>状态</strong></p><p>State(Yes/No)</p></td>
-              {% for rec in iu_delivery_record %}
-                <td>
-                    {% if rec.data==1 %}
-                        <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
-                    {% else %}
-                        <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
-                    {% endif %}
-{#                    <p>1GB *</p>#}
-                    <span>{{ rec.state }}</span>
-                </td>
-              {% endfor %}
-          </tr>
-          <!-- coidea:table-holder:table:body:row END -->
-
-        </tbody>
-        <!-- coidea:table-holder:table:body END -->
-
-      </table>
-      <!-- coidea:table-holder:table END -->
-
-    </section>
-    <!-- coidea:table-holder END -->
-</div>
-
-{#工作经历#}
-<div class="container" style="width:95%;">
-<div class="row">
-<div class="col-sm-12">
- <!-- 查询表单 -->
- <form id="form_search" class="form-inline" role="form" method="get" action="{{url_for('iuser.main')}}">
-
-  <div class="form-group">
-   <label>个人工作经历</label>
-  </div>
-
-  <button type="button" class="btn btn-primary" onclick="presave(0)"><i class="fa fa-plus"></i> 新增</button>
- </form>
-</div>
-</div>
-<div class="row">
-<div class="col-sm-12">
- <!-- 数据显示表格 -->
- <table class="table table-striped" style="height: 300px;">
-  <thead>
-   <tr>
-    <th>公司</th>
-    <th>行业</th>
-    <th>入职时间</th>
-    <th>离职时间</th>
-    <th>职位名称</th>
-    <th>所属部门</th>
-    <th width="45%">工作内容</th>
-    <th width="150">操作</th>
-   </tr>
-  </thead>
-    <tbody>
-    {% for experience in iu_work_experience.data %}
-       <tr style="height: 0">
-        <td>{{experience.company_name}}</td>
-        <td>{{experience.company_industry}}</td>
-        <td>{{experience.entry_time}}</td>
-        <td>{{experience.departure_time}}</td>
-        <td>{{experience.job_title}}</td>
-        <td>{{experience.department}}</td>
-        <td style="word-wrap:break-word;word-break:break-all;white-space: pre-line;">{{experience.job_content}}</td>
-        <td>
-            <a href="javascript:;" onclick="presave({{experience.we_id}})"><i class="fa fa-edit"></i> 修改</a>
-            &nbsp;
-            <a href="javascript:;" onclick="remove({{experience.we_id}})"><i class="fa fa-remove"></i> 删除</a>
-        </td>
-       </tr>
-    {% endfor %}
-    <tr></tr>
-    </tbody>
- </table>
-</div>
-</div>
-
-</div> <!-- container 结束 -->
-
-{#收藏记录#}
-<div class="container" style="width:95%;">
-<div class="row">
-<div class="col-sm-12">
- <!-- 查询表单 -->
- <form id="form_search" class="form-inline" role="form" method="get" action="{{url_for('iuser.main')}}">
-
-  <div class="form-group">
-   <label>我的收藏</label>
-  </div>
- </form>
-</div>
-</div>
-<div class="row">
-<div class="col-sm-12">
- <!-- 数据显示表格 -->
- <table class="table table-striped" style="height: 300px;">
-  <thead>
-   <tr>
-    <th>职位名</th>
-    <th>公司名</th>
-    <th>工作地点</th>
-    <th>薪资</th>
-    <th>发布人</th>
-    <th>发布时间</th>
-    <th width="150">操作</th>
-   </tr>
-  </thead>
-    <tbody>
-    {% for position_heart in iu_position_heart %}
-       <tr style="height: 0">
-        <td><a href="{{url_for('jobs.details',id=position_heart.job_id)}}" target="_blank">{{position_heart.job_title}}</a></td>
-        <td>{{position_heart.company_name}}</td>
-        <td>{{position_heart.work_city}}</td>
-        <td>{{position_heart.salary_range}}</td>
-        <td>{{position_heart.hr_name}}</td>
-        <td>{{position_heart.create_time}}</td>
-        <td>
-            <a href="javascript:;" onclick="heart_remove({{position_heart.job_id}})"><i class="fa fa-heartbeat"></i> 取消收藏</a>
-
-        </td>
-       </tr>
-    {% endfor %}
-    <tr></tr>
-    </tbody>
- </table>
-</div>
-</div>
-
-</div> <!-- container 结束 -->
+                        <input type="hidden" name="we_id" value="0"/>
 
 
-<!-- 模态框（Modal）新增/修改工作经历 -->
-<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-              <h4 class="modal-title" >新增/修改 工作经历</h4>
-          </div>
-          <div class="modal-body">
+                    </form>
 
-              <form role="form" id="form_am">
 
-                <div class="form-group">
-                  <label>公司</label>
-                  <input type="text" class="form-control" name="company_name" placeholder="请输入公司名称">
                 </div>
-
-                <div class="form-group">
-                  <label>行业</label>
-                  <input type="text" class="form-control" name="company_industry" placeholder="请输入公司行业">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="save()">提交</button>
                 </div>
-
-                <div class="form-group">
-                  <label>入职时间</label>
-                  <input type="text" class="form-control" name="entry_time" placeholder="请输入入职时间 YYYY-MM">
-                </div>
-
-                <div class="form-group">
-                  <label>离职时间</label>
-                  <input type="text" class="form-control" name="departure_time" placeholder="请输入离职时间 YYYY-MM">
-                </div>
-
-                <div class="form-group">
-                  <label>职位名称</label>
-                  <input type="text" class="form-control" name="job_title" placeholder="请输入职位名称">
-                </div>
-
-                <div class="form-group">
-                  <label>所属部门</label>
-                  <input type="text" class="form-control" name="department" placeholder="请输入所属部门">
-                </div>
-
-                <div class="form-group">
-                  <label>工作内容</label>
-                  <textarea class="form-control" name="job_content" placeholder="请简述工作内容" style="resize: none;height:150px;"></textarea>
-                </div>
-
-                <input type="hidden" name="we_id" value="0" />
-
-
-              </form>
-
-
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-              <button type="button" class="btn btn-primary" onclick="save()">提交</button>
-          </div>
-      </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
 
 {% endblock %}
 

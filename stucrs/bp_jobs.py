@@ -21,6 +21,7 @@ def list():
 		'education_requirements': '',	# 学历要求
 		'company_industry': '',			# 所属行业
 		'work_city': '',				# 城市
+		'job_title': '',				# 职位关键字
 		'page': '',						# 分页
 		'pagesize': ''					# 单页数量
 	}
@@ -43,8 +44,8 @@ def list():
 
 	# 查询数据
 	jobs_data = search_job_list(current_user, form_data)
-	import pprint
-	pprint.pprint(jobs_data)
+	# import pprint
+	# pprint.pprint(jobs_data)
 	return render_template('tjobs_list.html', jobs_data=jobs_data)
 	
 # 投递信息
@@ -70,7 +71,7 @@ def heart():
 # 职位详情
 @jobs.route('/details/', methods=['GET'])
 def details():
-	pos_id = request.args.get("id")
+	pos_id = int(request.args.get("id"))
 	print("获取职位详情：", pos_id)
 	if pos_id:
 		ret = search_job_details_by_job_id(pos_id)

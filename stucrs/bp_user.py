@@ -110,6 +110,7 @@ def work_experience_info():
 @login_required
 def work_experience_save():
 	form_data = dict(request.form)
+	print("更新或保存用户工作经历:",form_data)
 	return save_work_experience(current_user, form_data)
 
 # 删除用户工作经历

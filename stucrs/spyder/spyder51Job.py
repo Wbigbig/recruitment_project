@@ -166,7 +166,6 @@ def spyder51JobInfoInsertDB():
                     update_spyderSearchMain_company_jobinfo_id(job, "jobinfo_id")
                 # 其他异常不处理
 
-
 # 爬取职位信息主程序
 def spyder51JobInfoMain(job):
     try:

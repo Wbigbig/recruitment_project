@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>公司详情</title>
+    <link rel="icon" href="/img/favicon.ico" sizes="32x32">
+    <!-- bootstrap CSS -->
+    <link href="/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 class="text-center"><strong>{{ data.company_name }}</strong></h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <h5 class="text-center">{{ data.company_type }}&nbsp&nbsp
+                |&nbsp&nbsp{{ data.company_industry }}
+            </h5>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <h4 class="text-left">
+            <strong>
+                公司介绍
+            </strong>
+        </h4>
+    </div>
+    <div class="row">
+        <div class="col-sm-12" style="font-size:16px;">
+            {{ data.company_profile|replace('\n','<br>')|safe }}
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <h4>
+            <strong>
+                该公司在招职位
+            </strong>
+        </h4>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-striped">
+                <tbody>
+                {% for position in data.position_list %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('jobs.details', id=position.job_id) }}" target="_blank">
+                                {{ position.job_title }}
+                            </a>
+                        </td>
+                        <td>{{ position.education_requirements }}</td>
+                        <td>{{ position.work_city }}</td>
+                        <td>{{ position.salary_range }}</td>
+                        <td>{{ position.create_time }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- bootstrap js -->
+<script src="/bootstrap-3.3.5-dist/js/jquery.min.js"></script>
+<script src="/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+<script src="/iceking-utils-jquery.js"></script>
+<script src="/sweetalert.min.js"></script>
+
+</body>
+</html>

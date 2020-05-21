@@ -23,14 +23,26 @@ connect_info = conn_str.format(user="root",
                                db_name="recruitment_s")
 
 ENGINE = create_engine(connect_info,
-                       max_overflow=0,  # 超过连接池大小外最多创建的连接
-                       pool_size=5,  # 连接池大小
+                       max_overflow=1000,  # 超过连接池大小外最多创建的连接
+                       pool_size=500,  # 连接池大小
                        pool_timeout=30,  # 池中没有线程最多等待的时间，否则报错
-                       pool_recycle=-1  # 多久之后对线程池中的线程进行一次连接的回收（重置）
+                       pool_recycle=-1,  # 多久之后对线程池中的线程进行一次连接的回收（重置）
+                       # echo=True       # 输出sql
                        )
 # 创建会话
-Session = sessionmaker(bind=ENGINE,expire_on_commit=False)
-session = Session()
+# expire_on_commit=False    sessionmaker是否设置这个，以及其作用，需进一步了解
+Session = sessionmaker(bind=ENGINE)
+Session = scoped_session(Session)
+# session = Session()
+# print(f'初始创建sessionid:{id(session)}')
+"""
+此处采用scoped_session：
+    一个请求线程下session共享，不需要在函数间进行session参数传递。
+    单个线程内，每个函数中session=Session()获得的都是同一个session。有点单例模式的味道。
+    
+    多请求形成多线程下，线程间session是不共享的，即每个线程拥有独立的session实例。
+"""
+
 # 创建基类
 Base = declarative_base()
 
@@ -88,6 +100,8 @@ class RecruiterCompany(Base):
 
 def get_total_ptotal_from_RecruiterCompany(pagesize):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         total = session.query(RecruiterCompany).count()
         session.close()
         pagetotal = total // pagesize if total % pagesize == 0 else total // pagesize + 1
@@ -98,6 +112,8 @@ def get_total_ptotal_from_RecruiterCompany(pagesize):
 
 def get_company_by_page(page, pagesize, pagetotal):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         if page < 1 or page > pagetotal:
             print("页码异常")
             return None
@@ -215,6 +231,8 @@ def create_RecruiterCompany(company_info):
     #     "legal_representative": "二八",
     #     "company_profile": "11111111111来了就是一家人，团结一致好家伙！冲冲冲！"
     # }
+    session = Session()
+    print(f'sessionid:{id(session)}')
     session.add(RecruiterCompany(**company_info))
     session.commit()
     session.close()
@@ -231,6 +249,8 @@ def create_RecruiterHr(hr_info):
     #     "password": "000000",
     #     "email": "hreamil2@163.com",
     # }
+    session = Session()
+    print(f'sessionid:{id(session)}')
     add_list = []
     for h in hr_info:
         add_list.append(RecruiterHr(**h))
@@ -254,6 +274,8 @@ def create_RecruitmentPosition(position_info):
     #     "salary_range": "100W/月薪",
     #     "job_description": "2222222222222熟读唐诗三百首！左青龙，右白虎！生化技术无所不能！干干干！"
     # }
+    session = Session()
+    print(f'sessionid:{id(session)}')
     add_list = []
     for p in position_info:
         add_list.append(RecruitmentPosition(**p))
@@ -272,6 +294,8 @@ def create_DeliveryRecord():
         "job_id": 1,
         "hr_id": 1
     }
+    session = Session()
+    print(f'sessionid:{id(session)}')
     session.add(DeliveryRecord(**delivery_info))
     session.commit()
     session.close()
@@ -290,6 +314,8 @@ def create_WorkExperience():
         "department": "电子技术部门",
         "job_content": "收到了开飞机稍等快乐就考虑大家快来就反抗来点实际分离开我我问解放路快递费但是是稍等快乐局我我的时间开心农场考虑就适乐肤\n对化工电子设备进行研究加工，实现公司以及客户的功能。为公司<br>创造伟大财富！实现自己的人生理想！冲冲冲！！！\nheieheieiehiehie收到了开飞机稍等快乐就考虑大家快来就反抗来点实际分离开我我问解放路快递费但是是稍等快乐局我我的时间开心农场考虑就适乐肤\n对化工电子设备进行研究加工，实现公司以及客户的功能。为公司创造伟大财富！实现自己的人生理想！冲冲冲！！！\nheieheieiehiehie收到了开飞机稍等快乐就考虑大家快来就反抗来点实际分离开我我问解放路快递费但是是稍等快乐局我我的时间开心农场考虑就适乐肤\n对化工电子设备进行研究加工，实现公司以及客户的功能。为公司创造伟大财富！实现自己的人生理想！冲冲冲！！！\nheieheieiehiehie收到了开飞机稍等快乐就考虑大家快来就反抗来点实际分离开我我问解放路快递费但是是稍等快乐局我我的时间开心农场考虑就适乐肤\n对化工电子设备进行研究加工，实现公司以及客户的功能。为公司创造伟大财富！实现自己的人生理想！冲冲冲！！！\nheieheieiehiehie",
     }
+    session = Session()
+    print(f'sessionid:{id(session)}')
     session.add(WorkExperience(**work_experience_info))
     session.commit()
     session.close()

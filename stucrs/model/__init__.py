@@ -13,9 +13,13 @@ from stucrs.project_utils import dRet  #在stucrs.project_utils导入dRet模块�
 
 import traceback  #异常信息模块
 
+count = 0
+
 # 用户注册操作
 def create_applicant_user(u_info):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         # Applicant表 增加 前端传过来的u_info数据
         session.add(Applicant(**u_info))
         session.commit() # 提交数据
@@ -64,6 +68,8 @@ class User(UserMixin):
         :return: 返回None则无对应用户
         """
         try:
+            session = Session()
+            print(f'sessionid:{id(session)}')
             print("获取用户信息")
             user_ret = session.query(Applicant).filter(or_(Applicant.phone == self.phone, Applicant.email == self.email)).first()
             if not user_ret: return
@@ -75,6 +81,8 @@ class User(UserMixin):
     @staticmethod
     def create_user(register_param):
         try:
+            session = Session()
+            print(f'sessionid:{id(session)}')
             print("注册账号", locals())
             if session.query(Applicant).filter(Applicant.phone == register_param["phone"]).first():
                 return dRet(500, "该手机号已注册")
@@ -92,7 +100,9 @@ class User(UserMixin):
         :return:
         """
         try:
-            print("用户回调User.get", user_id)
+            session = Session()
+            print(f'sessionid:{id(session)}')
+            print("用户回调User.get", user_id, f'sessionid:{id(session)}')
             user_ret = session.query(Applicant).filter(Applicant.user_id == user_id).first()
             user_get = User({"acc": user_ret.phone, "password": user_ret.password})
             user_get.verify_password()
@@ -104,6 +114,8 @@ class User(UserMixin):
 # 接收前端传递过来的参数，对用户个人信息进行修改操作
 def update_applicant_user(current_user, iu_param):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         print("更新用户信息", current_user.user_id, iu_param)
         # 在Applicant表中过滤表字段user_id == current_user.user_id的，找到数据后更新数据，按字典值更新
         session.query(Applicant).filter(Applicant.user_id == current_user.user_id).update(iu_param)
@@ -117,7 +129,9 @@ def update_applicant_user(current_user, iu_param):
 # 根据获取到的当前用户来获取用户投递记录
 def get_delivery_record(current_user):
     try:
-        print("获取用户投递记录", current_user.user_id)
+        session = Session()
+        print(f'sessionid:{id(session)}')
+        print("获取用户投递记录", current_user.user_id, f'sessionid:{id(session)}')
         # 从DeliveryRecord表中查询过滤表用户id为当前用户的id
         records = session.query(DeliveryRecord).filter(DeliveryRecord.user_id == current_user.user_id).order_by(DeliveryRecord.delivery_time.desc()).all()
         delivery_record_list = []
@@ -160,6 +174,8 @@ def get_delivery_record(current_user):
 # 获取应聘者工作经历
 def get_work_experience(current_user):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         print("获取用户工作经历", current_user.user_id)
         experiences = session.query(WorkExperience).filter(WorkExperience.user_id == current_user.user_id).order_by(WorkExperience.create_time.desc()).all()
         experiences_list = []
@@ -178,21 +194,19 @@ def get_work_experience(current_user):
 # 获取应聘者收藏表
 def get_position_heart(current_user):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         print("获取用户收藏记录", current_user.user_id)
         position_hearts = session.query(heartPosition).filter(heartPosition.user_id == current_user.user_id).all()
         hearts_list = []
         for heart in position_hearts:
             ret_position = filter_from_model_by_kw(RecruitmentPosition, job_id=heart.job_id)
             if not ret_position: continue
-            hearts_list.append({
-                "job_id": ret_position.job_id,
-                "job_title": ret_position.job_title,
-                "company_name": ret_position.recruiter_company.company_name,
-                "work_city": ret_position.work_city,
-                "salary_range": ret_position.salary_range,
-                "hr_name": ret_position.recruiter_hr.name,
-                "create_time": ret_position.create_time.strftime("%Y-%m-%d %H:%M")
-            })
+            add_position = {k:v for (k,v) in vars(ret_position).items()}
+            add_position['create_time'] = add_position['create_time'].strftime('%Y-%m-%d %H:%M')
+            add_position['company_name'] = ret_position.recruiter_company.company_name
+            add_position['hr_name'] = ret_position.recruiter_hr.name
+            hearts_list.append(add_position)
         return dRet(200, hearts_list)
     except:
         print(traceback.format_exc())
@@ -213,6 +227,8 @@ def eq_we_id_in_work_experience(current_user, form_data):
 # 修改或保存应聘者工作经历
 def save_work_experience(current_user, form_data):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         if form_data['we_id'] != '0':
             # 执行修改操作
             print("执行更新工作经历操作", current_user.user_id, form_data)
@@ -247,9 +263,14 @@ def save_work_experience(current_user, form_data):
         return dRet(500, "新增或保存工作经历异常")
 
 # 删除用户工作经历
-#接收前端发送过来参数，并在数据库中寻找该参数所对应的id然后删除
+# 接收前端发送过来参数，并在数据库中寻找该参数所对应的id然后删除
 def remove_work_experience(current_user, form_data):
     try:
+        global count
+        count += 1
+        print("总数", count)
+        session = Session()
+        print(f'sessionid:{id(session)}')
         print("执行删除工作经历操作", current_user.user_id, form_data)
         eq_ret = eq_we_id_in_work_experience(current_user, form_data)
         if eq_ret['status'] == 200:
@@ -265,6 +286,8 @@ def remove_work_experience(current_user, form_data):
 # 删除用户收藏
 def remove_position_heart(current_user, form_data):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         print("执行删除收藏操作", current_user.user_id, form_data)
         ret_heart = filter_from_model_by_kw(heartPosition, user_id=current_user.user_id, job_id=int(form_data["job_id"]))
         if not ret_heart:
@@ -280,20 +303,24 @@ def remove_position_heart(current_user, form_data):
 # 查询职位列表job_list
 def search_job_list(current_user, form_data):
     try:
-        print("查询职位列表操作", form_data)
+        session = Session()
+        print(f'sessionid:{id(session)}')
+        print("查询职位列表操作", form_data, f'id session:{id(session)}')
         search_ = []
         # 多表查询 RecruitmentPosition, RecruiterCompany, RecruiterHr
         search_.append(and_(RecruitmentPosition.company_id == RecruiterCompany.company_id, RecruitmentPosition.hr_id == RecruiterHr.hr_id))
-        if form_data['start_time']:
+        if form_data.get('start_time') and form_data['start_time']:
             start_time = datetime.datetime.strptime(form_data['start_time']+" 00:00:00", "%Y-%m-%d %H:%M:%S")
             end_time = datetime.datetime.strptime(form_data['end_time']+" 23:59:59", "%Y-%m-%d %H:%M:%S")
             search_.append(and_(RecruitmentPosition.create_time>=start_time, RecruitmentPosition.create_time<=end_time))
-        if form_data['education_requirements']:
+        if form_data.get('education_requirements') and form_data['education_requirements']:
             search_.append(RecruitmentPosition.education_requirements.like('%{0}%'.format(form_data['education_requirements'])))
-        if form_data['company_industry']:
+        if form_data.get('company_industry') and form_data['company_industry']:
             search_.append(RecruiterCompany.company_industry.like('%{0}%'.format(form_data['company_industry'])))
-        if form_data['work_city']:
+        if form_data.get('work_city') and form_data['work_city']:
             search_.append(RecruitmentPosition.work_city.like('%{0}%'.format(form_data['work_city'])))
+        if form_data.get('job_title') and form_data['job_title']:
+            search_.append(RecruitmentPosition.job_title.like('%{0}%'.format(form_data['job_title'])))
         # 获取总数
         jobs_total = session.query(RecruitmentPosition, RecruiterCompany, RecruiterHr)\
             .filter(*search_)\
@@ -343,7 +370,9 @@ def search_job_list(current_user, form_data):
 # 查询公司列表company_list
 def search_company_list(current_user, form_data):
     try:
-        print("查询公司列表操作", form_data)
+        session = Session()
+        print(f'sessionid:{id(session)}')
+        print("查询公司列表操作", form_data, f'session: {id(session)}')
         search_ = []
         if form_data['company_name']:
             search_.append(RecruiterCompany.company_name.like('%{0}%'.format(form_data['company_name'])))
@@ -395,6 +424,8 @@ def search_company_list(current_user, form_data):
 # 进行投递操作
 def delivery_by_job_id(current_user, form_data):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         print("执行投递操作", current_user.user_id, form_data)
         # 根据job_id 获取详细信息
         job_data = session.query(RecruitmentPosition).filter(RecruitmentPosition.job_id == int(form_data['job_id'])).first()
@@ -421,6 +452,8 @@ def delivery_by_job_id(current_user, form_data):
 # 进行收藏操作
 def heart_by_job_id(current_user, form_data):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         print("执行收藏职位操作", current_user.user_id, form_data)
         # 判断是否有该职位
         job_ret = filter_from_model_by_kw(RecruitmentPosition, job_id=int(form_data["job_id"]))
@@ -442,20 +475,22 @@ def heart_by_job_id(current_user, form_data):
         print(traceback.format_exc())
         return dRet(500, "收藏异常")
 
-
 # 根据company_id 查找hr_id
 def search_hr_id_by_company_id(company_id):
+    session = Session()
+    print(f'sessionid:{id(session)}')
     hr = session.query(RecruiterHr).filter(RecruiterHr.company_id == company_id).first()
     session.close()
     return hr
 
 # 根据job_id 查找职位信息
 def search_job_details_by_job_id(job_id):
-    position = filter_from_model_by_kw(RecruitmentPosition, job_id=int(job_id))
+    position = filter_from_model_by_kw(RecruitmentPosition, job_id=job_id)
     if not position:
         return dRet(500, "该职位不存在")
     # 发布hr
-    hr = filter_from_model_by_kw(RecruiterHr, hr_id=position.hr_id)
+    # hr = filter_from_model_by_kw(RecruiterHr, hr_id=position.hr_id)
+    hr = position.recruiter_hr
     # 归属公司
     company = hr.recruiter_company
     position_dict, hr_dict, company_dict = {}, {}, {}
@@ -472,6 +507,22 @@ def search_job_details_by_job_id(job_id):
     }
     return dRet(200, ret)
 
+# 根据company_id 查找公司信息
+def search_company_details_by_company_id(company_id):
+    company = filter_from_model_by_kw(RecruiterCompany, company_id=company_id)
+    if not company_id:
+        return dRet(500, "该公司不存在")
+    company_dict = {k:v for (k,v) in vars(company).items()}
+    company_dict['create_time'] = company_dict['create_time'].strftime('%m-%d')
+    # 公司在招职位信息
+    position_list = []
+    for position in company.rec_pos:
+        t_pos_dict = {k:v for (k,v) in vars(position).items()}
+        t_pos_dict['create_time'] = t_pos_dict['create_time'].strftime('%Y-%m-%d')
+        position_list.append(t_pos_dict)
+    company_dict['position_list'] = position_list
+    return dRet(200, company_dict)
+
 # 判断表是否存在该数据
 def filter_from_model_by_kw(model, **kwargs):
     """
@@ -480,6 +531,8 @@ def filter_from_model_by_kw(model, **kwargs):
     :param kwargs:
     :return:
     """
+    session = Session()
+    print(f'sessionid:{id(session)}')
     ret = session.query(model).filter_by(**kwargs).first()
     # session.close()
     return ret

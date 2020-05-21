@@ -34,6 +34,8 @@ class spyderCompany(Base):
 # 查询是否有该公司,有则返回id,无则返回0，异常None
 def search_or_create_spydercompany(searchjob):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         ret_company = session.query(spyderCompany).filter(spyderCompany.company_name == searchjob.company_name).first()
         session.close()
         if not ret_company:
@@ -45,6 +47,8 @@ def search_or_create_spydercompany(searchjob):
 # addspyderCompany 新增公司 返回新增公司
 def add_spyderCompany(company_info):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         session.add(spyderCompany(**company_info))
         session.commit()
         ret_company = session.query(spyderCompany).order_by(spyderCompany.company_id.desc()).first()
@@ -58,6 +62,8 @@ def add_spyderCompany(company_info):
 # 计算公司表总数，分页总数
 def get_total_ptotal_from_spyderCompany(pagesize):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         total = session.query(spyderCompany).count()
         pagetotal = total // pagesize if total % pagesize == 0 else total // pagesize + 1
         return total, pagetotal
@@ -74,6 +80,8 @@ def get_spyder_company_by_page(page, pagesize, pagetotal):
     :return:
     """
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         if page < 1 or page > pagetotal:
             print("页码异常")
             return None
@@ -105,6 +113,8 @@ import time
 # 搜索表入库操作
 def insertSearchMain(job_list):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         add_list = []
         for job in job_list:
             # 过滤重复
@@ -128,6 +138,8 @@ def get_total_ptotal_from_searchmain(pagesize):
     :return: total，totalpage
     """
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         total = session.query(spyderSearchMain).count()
         pagetotal = total // pagesize if total % pagesize == 0 else total // pagesize + 1
         return total, pagetotal
@@ -144,6 +156,8 @@ def get_search_main_by_page(page, pagesize, pagetotal):
     :return:
     """
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         if page < 1 or page > pagetotal:
             print("页码异常")
             return None
@@ -156,6 +170,8 @@ def get_search_main_by_page(page, pagesize, pagetotal):
 
 # 更新spyderSearchMain数据表company_id字段,jobinfo_id字段
 def update_spyderSearchMain_company_jobinfo_id(job, key):
+    session = Session()
+    print(f'sessionid:{id(session)}')
     session.query(spyderSearchMain).filter(spyderSearchMain.job_id == job.job_id).update({key:getattr(job,key)})# update是字典
     session.commit()
     session.close()
@@ -185,6 +201,8 @@ class spyderRecruitmentPosition(Base):
 # 查询公司是否有该职位id
 def search_job_from_spydercompany(job):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         company_belong = session.query(spyderCompany).filter(spyderCompany.company_id == job.company_id).first()
         for jobinfo in company_belong.backpos:
             if job.job_name == jobinfo.job_title and job.job_link == jobinfo.job_link:
@@ -197,13 +215,14 @@ def search_job_from_spydercompany(job):
 # 新增职位
 def add_spyderRecruitmentPosition(job_info):
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         session.add(spyderRecruitmentPosition(**job_info))
         session.commit()
         ret_job = session.query(spyderRecruitmentPosition).order_by(spyderRecruitmentPosition.job_id.desc()).first()
         session.close()
         return ret_job
     except:
-        session.close()
         print(traceback.format_exc())
         return None
 
@@ -214,6 +233,8 @@ def get_total_ptotal_from_postiton(pagesize):
     :return: total，totalpage
     """
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         total = session.query(spyderRecruitmentPosition).count()
         pagetotal = total // pagesize if total % pagesize == 0 else total // pagesize + 1
         return total, pagetotal
@@ -230,6 +251,8 @@ def get_position_by_page(page, pagesize, pagetotal):
     :return:
     """
     try:
+        session = Session()
+        print(f'sessionid:{id(session)}')
         if page < 1 or page > pagetotal:
             print("页码异常")
             return None

@@ -114,10 +114,7 @@ var init = function(){
 	//根据上一次查询的日期端，设置到文本框中
 	jqu.formItem('start_time','form_search').val(start_time);
 	jqu.formItem('end_time','form_search').val(end_time);
-	jqu.formItem('company_industry','form_search').val(company_industry);
-	jqu.formItem('education_requirements','form_search').val(education_requirements);
-	jqu.formItem('work_city','form_search').val(work_city);
-	
+
 	//新增/修改表单中的日期
 	jqu.formItem('fdate','form_am').datetimepicker({
 		format: 'yyyy-mm-dd',
