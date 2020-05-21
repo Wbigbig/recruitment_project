@@ -16,11 +16,11 @@ import traceback  #异常信息模块
 count = 0
 
 # 用户注册操作
-def create_applicant_user(u_info):
+def create_applicant_user(u_info, model):   # 直接传模型 增加 用户会有问题，需要修改前端结构
     try:
         session = Session()
         print(f'sessionid:{id(session)}')
-        # Applicant表 增加 前端传过来的u_info数据
+        # Applicant表或 Hr表 增加 前端传过来的u_info数据
         session.add(Applicant(**u_info))
         session.commit() # 提交数据
         session.close()     #关闭会话
@@ -39,6 +39,7 @@ class User(UserMixin):
         self.phone = login_param.get("acc")
         self.password = login_param.get("password")
         self.email = login_param.get("acc")
+        self.u_type = int(login_param.get("u_type"))
         self.industry = None
         self.real_name = None
         self.birthday = None
@@ -53,16 +54,20 @@ class User(UserMixin):
     # 验证账号密码
     def verify_password(self):
         print("验证账号")
-        pe_user = self.get_phone_email_user()
+        find_model = Applicant if self.u_type == 0 else RecruiterHr if self.u_type == 1 else None
+        if not find_model:
+            print("u_type类型错误")
+            return
+        pe_user = self.get_phone_email_user(find_model)
         if not pe_user: return
         if self.password == pe_user.password:
-            for k, v in vars(self).items():
+            for k, v in vars(pe_user).items():
                 setattr(self, k, getattr(pe_user, k))   # 密码正确，重置用户信息
             setattr(self, "id", self.user_id)           # 设置实例id，用户login_user需要使用
             return True
         return
 
-    def get_phone_email_user(self):
+    def get_phone_email_user(self, find_model):
         """
         尝试从数据库获取用户信息
         :return: 返回None则无对应用户
@@ -71,7 +76,7 @@ class User(UserMixin):
             session = Session()
             print(f'sessionid:{id(session)}')
             print("获取用户信息")
-            user_ret = session.query(Applicant).filter(or_(Applicant.phone == self.phone, Applicant.email == self.email)).first()
+            user_ret = session.query(find_model).filter(or_(find_model.phone == self.phone, find_model.email == self.email)).first()
             if not user_ret: return
             return user_ret
         except:
@@ -84,11 +89,15 @@ class User(UserMixin):
             session = Session()
             print(f'sessionid:{id(session)}')
             print("注册账号", locals())
-            if session.query(Applicant).filter(Applicant.phone == register_param["phone"]).first():
+            find_model = Applicant if register_param["u_type"] == 0 else RecruiterHr if register_param["u_type"] == 1 else None
+            if not find_model:
+                print("u_type类型错误")
+                return dRet(500, "类型错误")
+            if session.query(find_model).filter(find_model.phone == register_param["phone"]).first():
                 return dRet(500, "该手机号已注册")
-            if session.query(Applicant).filter(Applicant.email == register_param["email"]).first():
+            if session.query(find_model).filter(find_model.email == register_param["email"]).first():
                 return dRet(500, "该邮箱号已注册")
-            return create_applicant_user(register_param)
+            return create_applicant_user(register_param, find_model)
         except:
             return dRet(500, "注册异常！")
 
