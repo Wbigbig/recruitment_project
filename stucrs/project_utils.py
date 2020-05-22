@@ -163,10 +163,12 @@ def dRet(status, msg_data, **kwargs):
 	return ret.get(status)
 
 # 获取referrer中next路由
-def get_next(referrer):
-	next = re.findall("next=(.*)", urllib.parse.unquote(referrer))
+def get_next(login_param, referrer):
+	next = None
+	if referrer:
+		next = re.findall("next=(.*)", urllib.parse.unquote(referrer))
 	print("referrer:", next)
-	return next[0] if next else '/iuser/main/'
+	return next[0] if next else '/iuser/main/' if int(login_param['u_type']) == 0 else '/companyhr/main/'
 
 #作为主模块时候的执行，一般测试函数使用
 if __name__ == '__main__':

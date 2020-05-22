@@ -38,9 +38,12 @@ $("button[id='main-login']").click(function () {
 
 $("button[id='main-register']").click(function () {
     var registerParam = {
-        "phone": $("#inputPhone").val(),
-        "email": $("#inputEmail3").val(),
-        "password": $("#inputPassword3").val()
+        "u_type": $("input[name='check']:checked").val(),
+        "register_param": {
+            "phone": $("#inputPhone").val(),
+            "email": $("#inputEmail3").val(),
+            "password": $("#inputPassword3").val()
+        }
     };
     var jsonKey = JSON.stringify(registerParam);
     console.log("执行注册请求", jsonKey);

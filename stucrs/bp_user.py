@@ -23,7 +23,7 @@ def login():
 			print("存储用户登录状态", lg_user.user_name, lg_user.phone, lg_user.email)
 			login_user(lg_user, remember=True)
 			print(dRet(200, "成功"))
-			ref_next = get_next(request.referrer)
+			ref_next = get_next(login_param, request.referrer)
 			return dRet(200, "成功", redirect_url=ref_next)
 		return dRet(500, "账号或密码错误")
 	return render_template('login.html')

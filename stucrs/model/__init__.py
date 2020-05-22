@@ -13,20 +13,19 @@ from stucrs.project_utils import dRet  #在stucrs.project_utils导入dRet模块�
 
 import traceback  #异常信息模块
 
-count = 0
-
 # 用户注册操作
-def create_applicant_user(u_info, model):   # 直接传模型 增加 用户会有问题，需要修改前端结构
+def create_applicant_user(register_param, model):
     try:
         session = Session()
         print(f'sessionid:{id(session)}')
         # Applicant表或 Hr表 增加 前端传过来的u_info数据
-        session.add(Applicant(**u_info))
+        session.add(model(**register_param["register_param"]))
         session.commit() # 提交数据
         session.close()     #关闭会话
-        print("applicant_add", u_info)  #后台打印出参数
+        print("applicant_add", register_param)  #后台打印出参数
         # 返回一个json给前端，前端根据 status 的状态码，进行对应的操作
-        return dRet(200, "注册成功", redirect_url='/iuser/main/')
+        redirect_url = '/iuser/main/' if register_param['u_type'] == 0  else '/companyhr/main/'
+        return dRet(200, "注册成功", redirect_url=redirect_url)
     except:
         print(traceback.format_exc())
         return dRet(500, "用户注册操作异常")
@@ -35,6 +34,7 @@ class User(UserMixin):
     def __init__(self, login_param):
         print("实例化User", locals())
         self.user_id = None
+        self.hr_id = None
         self.user_name = None
         self.phone = login_param.get("acc")
         self.password = login_param.get("password")
@@ -63,7 +63,7 @@ class User(UserMixin):
         if self.password == pe_user.password:
             for k, v in vars(pe_user).items():
                 setattr(self, k, getattr(pe_user, k))   # 密码正确，重置用户信息
-            setattr(self, "id", self.user_id)           # 设置实例id，用户login_user需要使用
+            setattr(self, "id", self.user_id if self.u_type == 0 else f'hr{self.hr_id}')           # 设置实例id，用户login_user需要使用
             return True
         return
 
@@ -93,12 +93,13 @@ class User(UserMixin):
             if not find_model:
                 print("u_type类型错误")
                 return dRet(500, "类型错误")
-            if session.query(find_model).filter(find_model.phone == register_param["phone"]).first():
+            if session.query(find_model).filter(find_model.phone == register_param["register_param"]["phone"]).first():
                 return dRet(500, "该手机号已注册")
-            if session.query(find_model).filter(find_model.email == register_param["email"]).first():
+            if session.query(find_model).filter(find_model.email == register_param["register_param"]["email"]).first():
                 return dRet(500, "该邮箱号已注册")
             return create_applicant_user(register_param, find_model)
         except:
+            print(traceback.format_exc())
             return dRet(500, "注册异常！")
 
     @staticmethod
@@ -109,11 +110,16 @@ class User(UserMixin):
         :return:
         """
         try:
+            print(type(user_id), user_id)
             session = Session()
             print(f'sessionid:{id(session)}')
             print("用户回调User.get", user_id, f'sessionid:{id(session)}')
-            user_ret = session.query(Applicant).filter(Applicant.user_id == user_id).first()
-            user_get = User({"acc": user_ret.phone, "password": user_ret.password})
+            if 'hr' in user_id:
+                user_ret = session.query(RecruiterHr).filter(RecruiterHr.hr_id == user_id.replace("hr","")).first()
+                user_get = User({"acc": user_ret.email, "password": user_ret.password, "u_type": 1})
+            else:
+                user_ret = session.query(Applicant).filter(Applicant.user_id == user_id).first()
+                user_get = User({"acc": user_ret.phone, "password": user_ret.password, "u_type": 0})
             user_get.verify_password()
             return user_get
         except:
@@ -179,6 +185,40 @@ def get_delivery_record(current_user):
     except:
         print(traceback.format_exc())
         return dRet(500, "获取投递记录异常")
+
+# 获取hr被投递记录
+def get_hr_deliveried_record(current_user):
+    try:
+        session = Session()
+        print("获取hr被投递记录", current_user.user_id, f'sessionid:{id(session)}')
+        records = session.query(DeliveryRecord).filter(DeliveryRecord.hr_id == current_user.hr_id).order_by(DeliveryRecord.delivery_time.desc()).all()
+        deliveried_record_list = []
+        for record in records:
+            # 正向查询获取应聘者个人信息
+            applicant_user = record.applicant
+            # 个人信息转换成字典，顺便格式化create_time
+            # t_rec = {k:v (k, v) if k != 'create_time' else (k, v.strftime("%Y-%m-%d")) for (k, v) in vars(applicant_user).items()}
+            t_rec = {k: v for (k, v) in vars(applicant_user).items()}
+            t_rec['create_time'] = t_rec['create_time'].strftime("%Y-%m-%d")
+            # 获取投递职位
+            t_rec['job_id'] = record.job_id
+            t_rec['job_title'] = record.recruitment_position.job_title
+            # 获取工作经历
+            # t_rec['we_list'] = [
+            #     {k:v for (k, v) in vars(we).items()}
+            #     for we in applicant_user.wes
+            # ]
+            t_rec['we_list'] = []
+            for we in applicant_user.wes:
+                t_we = {k: v for (k, v) in vars(we).items()}
+                t_we['create_time'] = t_we['create_time'].strftime("%Y-%m-%d")
+                t_rec['we_list'].append(t_we)
+            deliveried_record_list.append(t_rec)
+        print("被投递记录", current_user.user_id, deliveried_record_list)
+        return dRet(200, deliveried_record_list)
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "获取被投递记录异常")
 
 # 获取应聘者工作经历
 def get_work_experience(current_user):
@@ -275,9 +315,6 @@ def save_work_experience(current_user, form_data):
 # 接收前端发送过来参数，并在数据库中寻找该参数所对应的id然后删除
 def remove_work_experience(current_user, form_data):
     try:
-        global count
-        count += 1
-        print("总数", count)
         session = Session()
         print(f'sessionid:{id(session)}')
         print("执行删除工作经历操作", current_user.user_id, form_data)

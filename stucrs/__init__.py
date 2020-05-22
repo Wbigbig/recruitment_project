@@ -13,6 +13,7 @@ from .bp_main import main
 from .bp_jobs import jobs
 from .bp_companys import companys
 from .bp_user import iuser
+from .cp_companyhr import companyhr
 from .model import User
 
 # 项目的配置信息
@@ -53,6 +54,7 @@ def create_app():
     app.register_blueprint(blueprint=jobs,url_prefix='/jobs')
     app.register_blueprint(blueprint=companys,url_prefix='/companys')
     app.register_blueprint(blueprint=iuser, url_prefix='/iuser')
+    app.register_blueprint(blueprint=companyhr, url_prefix='/companyhr')
 
     # 配置login_manager 使用登录管理器管理会话
     login_manager = LoginManager()  #初始化一个LoginManager类对象
