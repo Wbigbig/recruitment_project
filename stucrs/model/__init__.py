@@ -64,6 +64,8 @@ class User(UserMixin):
             for k, v in vars(pe_user).items():
                 setattr(self, k, getattr(pe_user, k))   # 密码正确，重置用户信息
             setattr(self, "id", self.user_id if self.u_type == 0 else f'hr{self.hr_id}')           # 设置实例id，用户login_user需要使用
+            for k, v in vars(self).items():
+                print(k, v)
             return True
         return
 
@@ -190,7 +192,7 @@ def get_delivery_record(current_user):
 def get_hr_deliveried_record(current_user):
     try:
         session = Session()
-        print("获取hr被投递记录", current_user.user_id, f'sessionid:{id(session)}')
+        print("获取hr被投递记录", current_user.hr_id, f'sessionid:{id(session)}')
         records = session.query(DeliveryRecord).filter(DeliveryRecord.hr_id == current_user.hr_id).order_by(DeliveryRecord.delivery_time.desc()).all()
         deliveried_record_list = []
         for record in records:
@@ -199,20 +201,21 @@ def get_hr_deliveried_record(current_user):
             # 个人信息转换成字典，顺便格式化create_time
             # t_rec = {k:v (k, v) if k != 'create_time' else (k, v.strftime("%Y-%m-%d")) for (k, v) in vars(applicant_user).items()}
             t_rec = {k: v for (k, v) in vars(applicant_user).items()}
+            del t_rec['_sa_instance_state']
             t_rec['create_time'] = t_rec['create_time'].strftime("%Y-%m-%d")
             # 获取投递职位
             t_rec['job_id'] = record.job_id
             t_rec['job_title'] = record.recruitment_position.job_title
             # 获取工作经历
-            # t_rec['we_list'] = [
-            #     {k:v for (k, v) in vars(we).items()}
-            #     for we in applicant_user.wes
-            # ]
             t_rec['we_list'] = []
             for we in applicant_user.wes:
                 t_we = {k: v for (k, v) in vars(we).items()}
                 t_we['create_time'] = t_we['create_time'].strftime("%Y-%m-%d")
+                del t_we['_sa_instance_state']
                 t_rec['we_list'].append(t_we)
+            if 'wes' in t_rec:
+                del t_rec['wes']
+            t_rec['data'] = 1
             deliveried_record_list.append(t_rec)
         print("被投递记录", current_user.user_id, deliveried_record_list)
         return dRet(200, deliveried_record_list)

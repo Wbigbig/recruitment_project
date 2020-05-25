@@ -67,16 +67,19 @@ jQuery(document).ready(function($){
 					var iu_inputs = $("[data-type='yearly'] ul input");
 					var iu_param = {
 						"real_name": $("[data-type='yearly'] div.cd-price input").eq(0).val(),
-						"user_name": iu_inputs.eq(0).val(),
-						"phone": iu_inputs.eq(1).val(),
-						"email": iu_inputs.eq(2).val(),
-						"birthday": iu_inputs.eq(3).val(),
-						"city": iu_inputs.eq(4).val(),
-						"current_identity": iu_inputs.eq(5).val(),
-						"industry": iu_inputs.eq(6).val(),
-						"personal_experience": iu_inputs.eq(7).val(),
-						"educational_experience": iu_inputs.eq(8).val()
+						// "user_name": iu_inputs.eq(0).val(),
+						// "phone": iu_inputs.eq(1).val(),
+						// "email": iu_inputs.eq(2).val(),
+						// "birthday": iu_inputs.eq(3).val(),
+						// "city": iu_inputs.eq(4).val(),
+						// "current_identity": iu_inputs.eq(5).val(),
+						// "industry": iu_inputs.eq(6).val(),
+						// "personal_experience": iu_inputs.eq(7).val(),
+						// "educational_experience": iu_inputs.eq(8).val()
 					};
+					iu_inputs.each(function (i) {
+						iu_param[$(this).attr("name")] = $(this).val()
+					});
 					var jsonKey = JSON.stringify(iu_param);
 					console.log("执行更新请求", jsonKey);
 					//创建异步对象

@@ -14,11 +14,11 @@ from .model import *
 
 companyhr = Blueprint('companyhr',__name__)
 
-@companyhr.route('/main/', methods=['GET','POST'])
+@companyhr.route('/main/', methods=['GET'])
 @login_required
 def main():
-    # 公司Hr主页
+    # 公司Hr主页, 个人信息
     hr = current_user
     # 获取职位被投递记录
-    hr_deliveried_record = get_hr_deliveried_record(current_user)
-    return hr_deliveried_record
+    hr_deliveried_record = get_hr_deliveried_record(current_user).get('data')
+    return render_template("companyhr_main.html", hr=hr, hr_deliveried_record=hr_deliveried_record)

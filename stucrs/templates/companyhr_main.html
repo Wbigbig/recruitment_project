@@ -40,23 +40,16 @@
                     <li data-type="monthly" class="is-visible">
                         <header class="cd-pricing-header">
                             <h2>个人卡片</h2>
-
                             <div class="cd-price">
-                                <span class="cd-value">{{ iu.real_name }}</span>
+                                <span class="cd-value">{{ hr.real_name }}</span>
                             </div>
                         </header> <!-- .cd-pricing-header -->
 
                         <div class="cd-pricing-body">
                             <ul class="cd-pricing-features">
-                                <li>{{ iu.user_name }}</li>
-                                <li>{{ iu.phone }}</li>
-                                <li>{{ iu.email }}</li>
-                                <li>{{ iu.birthday }}</li>
-                                <li>{{ iu.city }}</li>
-                                <li>{{ iu.current_identity }}</li>
-                                <li>{{ iu.industry }}</li>
-                                <li>{{ iu.personal_experience }}</li>
-                                <li>{{ iu.educational_experience }}</li>
+                                <li>{{ hr.name }}</li>
+                                <li>{{ hr.phone }}</li>
+                                <li>{{ hr.email }}</li>
                             </ul>
                         </div> <!-- .cd-pricing-body -->
 
@@ -71,21 +64,15 @@
                             <h2>修改卡片</h2>
 
                             <div class="cd-price">
-                                <span class="cd-value"><input type="text" value="{{ iu.real_name }}" placeholder="姓名"></span>
+                                <span class="cd-value"><input type="text" value="{{ hr.real_name }}" placeholder="姓名"></span>
                             </div>
                         </header> <!-- .cd-pricing-header -->
 
                         <div class="cd-pricing-body">
                             <ul class="cd-pricing-features">
-                                <li><input type="text" value="{{ iu.user_name }}" name="user_name" placeholder="用户名"></li>
-                                <li><input type="text" value="{{ iu.phone }}" name="phone" placeholder="手机号" readonly></li>
-                                <li><input type="text" value="{{ iu.email }}" name="email" placeholder="电子邮箱" readonly></li>
-                                <li><input type="text" value="{{ iu.birthday }}" name="birthday" placeholder="生日"></li>
-                                <li><input type="text" value="{{ iu.city }}" name="city" placeholder="所在城市"></li>
-                                <li><input type="text" value="{{ iu.current_identity }}" name="current_identity" placeholder="学生/职场人士"></li>
-                                <li><input type="text" value="{{ iu.industry }}" name="industry" placeholder="行业"></li>
-                                <li><input type="text" value="{{ iu.personal_experience }}" name="personal_experience" placeholder="个人标签"></li>
-                                <li><input type="text" value="{{ iu.educational_experience }}" name="educational_experience" placeholder="教育/学校/学位"></li>
+                                <li><input type="text" value="{{ hr.name }}" name="name" placeholder="用户名"></li>
+                                <li><input type="text" value="{{ hr.phone }}" name="phone" placeholder="手机号" readonly></li>
+                                <li><input type="text" value="{{ hr.email }}" name="email" placeholder="电子邮箱" readonly></li>
                             </ul>
                         </div> <!-- .cd-pricing-body -->
 
@@ -105,7 +92,7 @@
         <!-- coidea:header START -->
         <header>
             <div class="header-inner">
-                <h1>投递记录</h1>
+                <h1>被投递记录</h1>
             </div>
         </header>
         <!-- coidea:header END -->
@@ -121,8 +108,8 @@
                 <tr>
                     <th></th>
                     {#            <th class="trigger"><p>Basic</p><span>plus</span></th>#}
-                    {% for rec in iu_delivery_record %}
-                        <th class="trigger"><p>{{ rec.company_name }}</p></th>
+                    {% for rec in hr_deliveried_record %}
+                        <th class="trigger"><p>{{ rec.real_name }}</p></th>
                     {% endfor %}
 
                 </tr>
@@ -136,7 +123,7 @@
                 <tr>
                     <td><p><strong>职位</strong></p>
                         <p>Position</p></td>
-                    {% for rec in iu_delivery_record %}
+                    {% for rec in hr_deliveried_record %}
                         <td><p>{{ rec.job_title }}</p> <span>-</span></td>
                     {% endfor %}
 
@@ -147,7 +134,7 @@
                 <tr>
                     <td><p><strong>学历</strong></p>
                         <p>Education</p></td>
-                    {% for rec in iu_delivery_record %}
+                    {% for rec in hr_deliveried_record %}
                         <td>
                             {% if rec.data==1 %}
                                 <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
@@ -155,7 +142,7 @@
                                 <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
                             {% endif %}
                             {#                    <p>1GB *</p>#}
-                            <span>{{ rec.education_requirements }}</span>
+                            <span>{{ rec.educational_experience }}</span>
                         </td>
                     {% endfor %}
 
@@ -166,7 +153,7 @@
                 <tr>
                     <td><p><strong>薪资</strong></p>
                         <p>Salary</p></td>
-                    {% for rec in iu_delivery_record %}
+                    {% for rec in hr_deliveried_record %}
                         <td>
                             {% if rec.data==1 %}
                                 <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
@@ -184,7 +171,7 @@
                 <tr>
                     <td><p><strong>职能</strong></p>
                         <p>Function</p></td>
-                    {% for rec in iu_delivery_record %}
+                    {% for rec in hr_deliveried_record %}
                         <td>
                             {% if rec.data==1 %}
                                 <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
@@ -202,7 +189,7 @@
                 <tr>
                     <td><p><strong>地址</strong></p>
                         <p>Address</p></td>
-                    {% for rec in iu_delivery_record %}
+                    {% for rec in hr_deliveried_record %}
                         <td>
                             {% if rec.data==1 %}
                                 <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
@@ -220,7 +207,7 @@
                 <tr>
                     <td><p><strong>投递时间</strong></p>
                         <p>Delivery Time</p></td>
-                    {% for rec in iu_delivery_record %}
+                    {% for rec in hr_deliveried_record %}
                         <td>
                             {% if rec.data==1 %}
                                 <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
@@ -238,7 +225,7 @@
                 <tr>
                     <td><p><strong>状态</strong></p>
                         <p>State(Yes/No)</p></td>
-                    {% for rec in iu_delivery_record %}
+                    {% for rec in hr_deliveried_record %}
                         <td>
                             {% if rec.data==1 %}
                                 <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
