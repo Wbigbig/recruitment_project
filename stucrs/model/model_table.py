@@ -154,6 +154,7 @@ class RecruitmentPosition(Base):
     salary_range = Column(String(50))
     job_description = Column(Text)
     create_time = Column(DateTime, default=datetime.datetime.now)
+    last_update_time = Column(DateTime, default=datetime.datetime.now)
 
     # 与生成表结构无关，仅用于查询方便
     recruiter_company = relationship("RecruiterCompany", backref="rec_pos")
@@ -170,6 +171,9 @@ class DeliveryRecord(Base):
     job_id = Column(Integer, ForeignKey("recruitment_position.job_id"), index=True)
     hr_id = Column(Integer, ForeignKey("recruiter_hr.hr_id"), index=True)
     delivery_time = Column(DateTime, default=datetime.datetime.now)
+    status = Column(Integer, default=0, comment="投递状态,0/1/2:已投递/已接收/打回")
+    ret_comment = Column(String(100), comment="hr接收/打回备注，返回给投递者")
+
 
     # 与生成表结构无关，仅用于查询方便
     # 与应聘者的正反向查询

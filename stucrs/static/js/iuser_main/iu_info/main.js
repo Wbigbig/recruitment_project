@@ -78,6 +78,10 @@ jQuery(document).ready(function($){
 						// "educational_experience": iu_inputs.eq(8).val()
 					};
 					iu_inputs.each(function (i) {
+						if($(this).attr("readonly")){
+							console.log("跳过");
+							return true;	// 下一个
+						}
 						iu_param[$(this).attr("name")] = $(this).val()
 					});
 					var jsonKey = JSON.stringify(iu_param);

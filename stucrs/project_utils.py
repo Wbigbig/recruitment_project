@@ -160,6 +160,8 @@ def dRet(status, msg_data, **kwargs):
 	for k, v in kwargs.items():
 		ret[200][k] = v
 		ret[500][k] = v
+		ret[302][k] = v
+	print(ret.get(status))
 	return ret.get(status)
 
 # 获取referrer中next路由

@@ -74,7 +74,7 @@ def main():
 		iu_work_experience = get_work_experience(current_user)
 		# 获取收藏记录
 		iu_position_heart = get_position_heart(current_user).get('data')
-		return render_template("iuser_main.html", iu=iu, iu_delivery_record=iu_delivery_record, iu_work_experience=iu_work_experience, iu_position_heart=iu_position_heart)
+		return render_template("iuser_main.html", iu=iu, iu_delivery_record=iu_delivery_record, iu_work_experience=iu_work_experience, iu_position_heart=iu_position_heart, main_route='/iuser')
 
 # 更新修改用户信息
 @iuser.route('/iu_update',methods=['POST'])
@@ -101,7 +101,7 @@ def work_experience_info():
 		"department": None,
 		"job_content": None,
 	}
-	for k in ret_experience.keys():
+	for k, v in ret_experience.items():
 		ret_experience[k] = eq_ret['data'][k]
 	return dRet(200, ret_experience)
 

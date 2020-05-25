@@ -1,5 +1,8 @@
 // 固定路由
-var main_route = '/iuser';
+// var main_route = '/iuser';
+
+// 重置个人中心链接
+$('#main_href').attr('href', main_route + "/main");
 
 //查询，恢复页码到1，并提交表单
 var search = function(){
@@ -25,8 +28,8 @@ var changePage = function(page){
 };
 
 //打开新增对话框
-var presave = function(we_id){
-	if (we_id === 0){
+var presave = function(_id){
+	if (_id === 0){
 		$('#modal1').modal('show').on('shown.bs.modal', function (e) {
             // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零
             $(this).css('display', 'block');
@@ -37,9 +40,22 @@ var presave = function(we_id){
         });
 		return false;
 	}
+	var thisUrl = null;
+	var data = {};
+	if(main_route == "/iuser"){
+		thisUrl = main_route + '/work_experience_info';
+		data = {
+			"we_id": _id
+		};
+	}
+	if(main_route == "/companyhr"){
+		thisUrl = main_route + '/position_info';
+		data = {
+			"job_id": _id
+		};
+	}
 
-	var thisUrl = main_route + '/work_experience_info';
-	jqu.loadJson(thisUrl,{we_id:we_id},function(result){
+	jqu.loadJson(thisUrl,data,function(result){
 		
 		// alert(jqu.obj2json(result));
 		
@@ -62,40 +78,55 @@ var save = function(){
 	var data = jqu.formData('form_am');
 	// alert(jqu.obj2json(data));
 	// 进行必填项的判断
-	if(data.company_name===''){
-		alert('公司 必须填写');
-		return;
-	}
-	if(data.company_industry===''){
-		alert('行业 必须填写');
-		return;
-	}
-	if(data.entry_time===''){
-		alert('入职时间 必须填写');
-		return;
-	}
-	if(data.departure_time===''){
-		alert('离职时间 必须填写');
-		return;
-	}
-	if(data.job_title===''){
-		alert('职位名称 必须填写');
-		return;
-	}
-	if(data.department===''){
-		alert('所属部门 必须填写');
-		return;
-	}
-	if(data.job_content===''){
-		alert('工作内容 必须填写');
-		return;
-	}
+	// if(data.company_name===''){
+	// 	alert('公司 必须填写');
+	// 	return;
+	// }
+	// if(data.company_industry===''){
+	// 	alert('行业 必须填写');
+	// 	return;
+	// }
+	// if(data.entry_time===''){
+	// 	alert('入职时间 必须填写');
+	// 	return;
+	// }
+	// if(data.departure_time===''){
+	// 	alert('离职时间 必须填写');
+	// 	return;
+	// }
+	// if(data.job_title===''){
+	// 	alert('职位名称 必须填写');
+	// 	return;
+	// }
+	// if(data.department===''){
+	// 	alert('所属部门 必须填写');
+	// 	return;
+	// }
+	// if(data.job_content===''){
+	// 	alert('工作内容 必须填写');
+	// 	return;
+	// }
 
+	for (var key in data){
+		if (data[key] === ''){
+			alert('请检查表单信息不为空');
+			return;
+		}
+	}
 	
 	// 保存前的提示
 	if(!confirm('确实要保存吗？'))
 		return;
-	var thisUrl = main_route + '/work_experience_save';
+
+	var thisUrl = null;
+
+	if(main_route == "/iuser"){
+		thisUrl = main_route + '/work_experience_save';
+	}
+	if(main_route == "/companyhr") {
+		thisUrl = main_route + '/position_info_save';
+	}
+
 	//提交数据进行保存
 	jqu.loadJson(thisUrl,data,function(result){
 		if(result.status === 500){

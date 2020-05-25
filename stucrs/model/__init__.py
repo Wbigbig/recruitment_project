@@ -133,12 +133,17 @@ def update_applicant_user(current_user, iu_param):
     try:
         session = Session()
         print(f'sessionid:{id(session)}')
-        print("更新用户信息", current_user.user_id, iu_param)
+        print("更新用户信息", current_user.user_id, current_user.hr_id, iu_param)
         # 在Applicant表中过滤表字段user_id == current_user.user_id的，找到数据后更新数据，按字典值更新
-        session.query(Applicant).filter(Applicant.user_id == current_user.user_id).update(iu_param)
+        if current_user.u_type == 0:
+            session.query(Applicant).filter(Applicant.user_id == current_user.user_id).update(iu_param)
+        elif current_user.u_type == 1:
+            session.query(RecruiterHr).filter(RecruiterHr.hr_id == current_user.hr_id).update(iu_param)
+        else:
+            return dRet(500, "无类型用户！")
         session.commit()
         session.close()
-        return dRet(200, "更新成功", redirect_url='/iuser/main/')
+        return dRet(200, "更新成功", redirect_url='/iuser/main/' if current_user.u_type == 0 else '/companyhr/main/')
     except:
         print(traceback.format_exc())
         return dRet(500, "更新异常")
@@ -199,13 +204,16 @@ def get_hr_deliveried_record(current_user):
             # 正向查询获取应聘者个人信息
             applicant_user = record.applicant
             # 个人信息转换成字典，顺便格式化create_time
-            # t_rec = {k:v (k, v) if k != 'create_time' else (k, v.strftime("%Y-%m-%d")) for (k, v) in vars(applicant_user).items()}
             t_rec = {k: v for (k, v) in vars(applicant_user).items()}
             del t_rec['_sa_instance_state']
             t_rec['create_time'] = t_rec['create_time'].strftime("%Y-%m-%d")
             # 获取投递职位
+            t_rec['delivery_id'] = record.delivery_id
             t_rec['job_id'] = record.job_id
             t_rec['job_title'] = record.recruitment_position.job_title
+            t_rec['delivery_time'] = record.delivery_time.strftime("%Y-%m-%d %H:%M:%S")
+            t_rec['status'] = record.status
+            t_rec['ret_comment'] = record.ret_comment
             # 获取工作经历
             t_rec['we_list'] = []
             for we in applicant_user.wes:
@@ -217,11 +225,33 @@ def get_hr_deliveried_record(current_user):
                 del t_rec['wes']
             t_rec['data'] = 1
             deliveried_record_list.append(t_rec)
+        # 不足10条补齐10条
+        if len(deliveried_record_list) < 10:
+            for _ in range(10-len(deliveried_record_list)):
+                deliveried_record_list.append({"data": 0})
         print("被投递记录", current_user.user_id, deliveried_record_list)
         return dRet(200, deliveried_record_list)
     except:
         print(traceback.format_exc())
         return dRet(500, "获取被投递记录异常")
+
+# 获取hr已发布职位信息
+def get_hr_recruitment_position(current_user):
+    try:
+        session = Session()
+        print("获取hr已发布职位信息", current_user.hr_id, f'sessionid:{id(session)}')
+        positions = session.query(RecruitmentPosition).filter(RecruitmentPosition.hr_id == current_user.hr_id).order_by(RecruitmentPosition.last_update_time.desc()).all()
+        ret_position_list = []
+        for position in positions:
+            t_pos = {k: v for (k, v) in vars(position).items()}
+            t_pos['create_time'] = t_pos['create_time'].strftime("%Y-%m-%d")
+            t_pos['last_update_time'] = t_pos['last_update_time'].strftime("%Y-%m-%d") if t_pos['last_update_time'] else t_pos['last_update_time']
+            # del t_pos['_sa_instance_state']
+            ret_position_list.append(t_pos)
+        return dRet(200, ret_position_list)
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "获取已发布职位异常")
 
 # 获取应聘者工作经历
 def get_work_experience(current_user):
@@ -313,6 +343,26 @@ def save_work_experience(current_user, form_data):
     except:
         print(traceback.format_exc())
         return dRet(500, "新增或保存工作经历异常")
+
+# 修改或保存职位信息
+def save_position_info(current_user, form_data):
+    try:
+        session = Session()
+        if form_data['job_id'] != '0':
+            print("执行更新职位信息操作", current_user.hr_id, form_data)
+            eq_ret = filter_from_model_by_kw(RecruitmentPosition, hr_id=current_user.hr_id, job_id=int(form_data.get('job_id')))
+            if eq_ret:
+                job_id = int(form_data['job_id'])
+                form_data.pop('job_id')
+                form_data['last_update_time'] = datetime.datetime.now()
+                session.query(RecruitmentPosition).filter(RecruitmentPosition.job_id == job_id).update(form_data)
+                session.commit()
+                session.close()
+                return dRet(200, "修改成功")
+            return dRet(500, "归属异常")
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "修改或保存职位信息异常")
 
 # 删除用户工作经历
 # 接收前端发送过来参数，并在数据库中寻找该参数所对应的id然后删除

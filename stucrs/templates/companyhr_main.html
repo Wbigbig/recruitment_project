@@ -24,6 +24,7 @@
 
     <script>
         jqu.loadJs('/js/iuser_main/common.js');
+        var main_route = '{{main_route}}';
     </script>
 {% endblock %}
 
@@ -50,6 +51,7 @@
                                 <li>{{ hr.name }}</li>
                                 <li>{{ hr.phone }}</li>
                                 <li>{{ hr.email }}</li>
+                                <li>{{ hr.company_name }}</li>
                             </ul>
                         </div> <!-- .cd-pricing-body -->
 
@@ -73,6 +75,7 @@
                                 <li><input type="text" value="{{ hr.name }}" name="name" placeholder="用户名"></li>
                                 <li><input type="text" value="{{ hr.phone }}" name="phone" placeholder="手机号" readonly></li>
                                 <li><input type="text" value="{{ hr.email }}" name="email" placeholder="电子邮箱" readonly></li>
+                                <li><input type="text" value="{{ hr.company_name }}" placeholder="所属公司" readonly></li>
                             </ul>
                         </div> <!-- .cd-pricing-body -->
 
@@ -87,7 +90,7 @@
 
     </div> <!-- .cd-pricing-container -->
 
-    {#投递记录#}
+    {#被投递记录#}
     <div class="deliver-container">
         <!-- coidea:header START -->
         <header>
@@ -121,10 +124,14 @@
 
                 <!-- coidea:table-holder:table:body:row START -->
                 <tr>
-                    <td><p><strong>职位</strong></p>
+                    <td><p><strong>投递职位</strong></p>
                         <p>Position</p></td>
                     {% for rec in hr_deliveried_record %}
-                        <td><p>{{ rec.job_title }}</p> <span>-</span></td>
+                        {% if rec.data==1 %}
+                            <td><p>{{ rec.job_title }}</p> <span>-</span></td>
+                        {% else %}
+                            <td><p>-</p> <span>-</span></td>
+                        {% endif %}
                     {% endfor %}
 
                 </tr>
@@ -138,11 +145,12 @@
                         <td>
                             {% if rec.data==1 %}
                                 <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                                <span>{{ rec.educational_experience }}</span>
                             {% else %}
                                 <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                                <span>-</span>
                             {% endif %}
                             {#                    <p>1GB *</p>#}
-                            <span>{{ rec.educational_experience }}</span>
                         </td>
                     {% endfor %}
 
@@ -151,17 +159,18 @@
 
                 <!-- coidea:table-holder:table:body:row START -->
                 <tr>
-                    <td><p><strong>薪资</strong></p>
-                        <p>Salary</p></td>
+                    <td><p><strong>所在城市</strong></p>
+                        <p>City</p></td>
                     {% for rec in hr_deliveried_record %}
                         <td>
                             {% if rec.data==1 %}
                                 <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                                <span>{{ rec.city }}</span>
                             {% else %}
                                 <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                                <span>-</span>
                             {% endif %}
                             {#                    <p>1GB *</p>#}
-                            <span>{{ rec.salary_range }}</span>
                         </td>
                     {% endfor %}
                 </tr>
@@ -169,17 +178,18 @@
 
                 <!-- coidea:table-holder:table:body:row START -->
                 <tr>
-                    <td><p><strong>职能</strong></p>
-                        <p>Function</p></td>
+                    <td><p><strong>生日</strong></p>
+                        <p>Birthday</p></td>
                     {% for rec in hr_deliveried_record %}
                         <td>
                             {% if rec.data==1 %}
                                 <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                                <span>{{ rec.birthday }}</span>
                             {% else %}
                                 <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                                <span>-</span>
                             {% endif %}
                             {#                    <p>1GB *</p>#}
-                            <span>{{ rec.job_description|replace('\n','<br>')|safe }}</span>
                         </td>
                     {% endfor %}
                 </tr>
@@ -187,17 +197,37 @@
 
                 <!-- coidea:table-holder:table:body:row START -->
                 <tr>
-                    <td><p><strong>地址</strong></p>
-                        <p>Address</p></td>
+                    <td><p><strong>联系方式</strong></p>
+                        <p>Tel</p></td>
                     {% for rec in hr_deliveried_record %}
                         <td>
                             {% if rec.data==1 %}
                                 <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                                <span>{{ rec.phone }}</span>
                             {% else %}
                                 <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                                <span>-</span>
                             {% endif %}
                             {#                    <p>1GB *</p>#}
-                            <span>{{ rec.work_address }}</span>
+                        </td>
+                    {% endfor %}
+                </tr>
+                <!-- coidea:table-holder:table:body:row END -->
+
+                <!-- coidea:table-holder:table:body:row START -->
+                <tr>
+                    <td><p><strong>邮箱</strong></p>
+                        <p>Email</p></td>
+                    {% for rec in hr_deliveried_record %}
+                        <td>
+                            {% if rec.data==1 %}
+                                <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                                <span>{{ rec.email }}</span>
+                            {% else %}
+                                <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                                <span>-</span>
+                            {% endif %}
+                            {#                    <p>1GB *</p>#}
                         </td>
                     {% endfor %}
                 </tr>
@@ -211,11 +241,12 @@
                         <td>
                             {% if rec.data==1 %}
                                 <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                                <span>{{ rec.delivery_time }}</span>
                             {% else %}
                                 <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                                <span>-</span>
                             {% endif %}
                             {#                    <p>1GB *</p>#}
-                            <span>{{ rec.delivery_time }}</span>
                         </td>
                     {% endfor %}
                 </tr>
@@ -228,12 +259,22 @@
                     {% for rec in hr_deliveried_record %}
                         <td>
                             {% if rec.data==1 %}
-                                <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                                {% if rec.status==0 %}
+                                    <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                                    <span name="{{ rec.delivery_id }}">接收</span>
+                                    <span name="{{ rec.delivery_id }}">打回</span>
+                                {% elif rec.status==1 %}
+                                    <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                                    <span>已接收</span>
+                                {% else %}
+                                    <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                                    <span>已打回</span>
+                                {% endif %}
                             {% else %}
                                 <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                                <span>-</span>
                             {% endif %}
                             {#                    <p>1GB *</p>#}
-                            <span>{{ rec.state }}</span>
                         </td>
                     {% endfor %}
                 </tr>
@@ -254,13 +295,13 @@
         <div class="row">
             <div class="col-sm-12">
                 <!-- 查询表单 -->
-                <form id="form_search" class="form-inline" role="form" method="get" action="{{ url_for('iuser.main') }}">
+                <form id="form_search" class="form-inline" role="form" method="get" action="{{ url_for('companyhr.main') }}">
 
                     <div class="form-group">
-                        <label>个人工作经历</label>
+                        <label>已发布人才职位</label>
                     </div>
 
-                    <button type="button" class="btn btn-primary" onclick="presave(0)"><i class="fa fa-plus"></i> 新增</button>
+                    <button type="button" class="btn btn-primary" onclick="presave(0)"><i class="fa fa-plus"></i> 新增人才职位</button>
                 </form>
             </div>
         </div>
@@ -270,30 +311,26 @@
                 <table class="table table-striped" style="height: 300px;">
                     <thead>
                     <tr>
-                        <th>公司</th>
-                        <th>行业</th>
-                        <th>入职时间</th>
-                        <th>离职时间</th>
                         <th>职位名称</th>
-                        <th>所属部门</th>
-                        <th width="45%">工作内容</th>
+                        <th>学历要求</th>
+                        <th>工作城市</th>
+                        <th>薪资范围</th>
+                        <th width="45%">职位要求/简述</th>
                         <th width="150">操作</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for experience in iu_work_experience.data %}
+                    {% for position in hr_recruitment_position %}
                         <tr style="height: 0">
-                            <td>{{ experience.company_name }}</td>
-                            <td>{{ experience.company_industry }}</td>
-                            <td>{{ experience.entry_time }}</td>
-                            <td>{{ experience.departure_time }}</td>
-                            <td>{{ experience.job_title }}</td>
-                            <td>{{ experience.department }}</td>
-                            <td style="word-wrap:break-word;word-break:break-all;white-space: pre-line;">{{ experience.job_content }}</td>
+                            <td>{{ position.job_title }}</td>
+                            <td>{{ position.education_requirements }}</td>
+                            <td>{{ position.work_city }}</td>
+                            <td>{{ position.salary_range }}</td>
+                            <td style="word-wrap:break-word;word-break:break-all;white-space: pre-line;">{{ position.job_description }}</td>
                             <td>
-                                <a href="javascript:;" onclick="presave({{ experience.we_id }})"><i class="fa fa-edit"></i> 修改</a>
+                                <a href="javascript:;" onclick="presave({{ position.job_id }})"><i class="fa fa-edit"></i> 修改</a>
                                 &nbsp;
-                                <a href="javascript:;" onclick="remove({{ experience.we_id }})"><i class="fa fa-remove"></i> 删除</a>
+                                <a href="javascript:;" onclick="remove({{ position.job_id }})"><i class="fa fa-remove"></i> 删除</a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -306,56 +343,56 @@
     </div> <!-- container 结束 -->
 
     {#收藏记录#}
-    <div class="container" style="width:95%;">
-        <div class="row">
-            <div class="col-sm-12">
-                <!-- 查询表单 -->
-                <form id="form_search" class="form-inline" role="form" method="get" action="{{ url_for('iuser.main') }}">
-
-                    <div class="form-group">
-                        <label>我的收藏</label>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <!-- 数据显示表格 -->
-                <table class="table table-striped" style="height: 300px;">
-                    <thead>
-                    <tr>
-                        <th>职位名</th>
-                        <th>公司名</th>
-                        <th>工作地点</th>
-                        <th>薪资</th>
-                        <th>发布人</th>
-                        <th>发布时间</th>
-                        <th width="150">操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for position_heart in iu_position_heart %}
-                        <tr style="height: 0">
-                            <td><a href="{{ url_for('jobs.details',id=position_heart.job_id) }}" target="_blank">{{ position_heart.job_title }}</a></td>
-                            <td><a href="{{ url_for('companys.details',id=position_heart.company_id) }}" target="_blank">{{ position_heart.company_name }}</a></td>
-                            <td>{{ position_heart.work_city }}</td>
-                            <td>{{ position_heart.salary_range }}</td>
-                            <td>{{ position_heart.hr_name }}</td>
-                            <td>{{ position_heart.create_time }}</td>
-                            <td>
-                                <a href="javascript:;" onclick="heart_remove({{ position_heart.job_id }})"><i class="fa fa-heartbeat"></i> 取消收藏</a>
-
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </div> <!-- container 结束 -->
-
+{#    <div class="container" style="width:95%;">#}
+{#        <div class="row">#}
+{#            <div class="col-sm-12">#}
+{#                <!-- 查询表单 -->#}
+{#                <form id="form_search" class="form-inline" role="form" method="get" action="{{ url_for('iuser.main') }}">#}
+{##}
+{#                    <div class="form-group">#}
+{#                        <label>我的收藏</label>#}
+{#                    </div>#}
+{#                </form>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="row">#}
+{#            <div class="col-sm-12">#}
+{#                <!-- 数据显示表格 -->#}
+{#                <table class="table table-striped" style="height: 300px;">#}
+{#                    <thead>#}
+{#                    <tr>#}
+{#                        <th>职位名</th>#}
+{#                        <th>公司名</th>#}
+{#                        <th>工作地点</th>#}
+{#                        <th>薪资</th>#}
+{#                        <th>发布人</th>#}
+{#                        <th>发布时间</th>#}
+{#                        <th width="150">操作</th>#}
+{#                    </tr>#}
+{#                    </thead>#}
+{#                    <tbody>#}
+{#                    {% for position_heart in iu_position_heart %}#}
+{#                        <tr style="height: 0">#}
+{#                            <td><a href="{{ url_for('jobs.details',id=position_heart.job_id) }}" target="_blank">{{ position_heart.job_title }}</a></td>#}
+{#                            <td><a href="{{ url_for('companys.details',id=position_heart.company_id) }}" target="_blank">{{ position_heart.company_name }}</a></td>#}
+{#                            <td>{{ position_heart.work_city }}</td>#}
+{#                            <td>{{ position_heart.salary_range }}</td>#}
+{#                            <td>{{ position_heart.hr_name }}</td>#}
+{#                            <td>{{ position_heart.create_time }}</td>#}
+{#                            <td>#}
+{#                                <a href="javascript:;" onclick="heart_remove({{ position_heart.job_id }})"><i class="fa fa-heartbeat"></i> 取消收藏</a>#}
+{##}
+{#                            </td>#}
+{#                        </tr>#}
+{#                    {% endfor %}#}
+{#                    <tr></tr>#}
+{#                    </tbody>#}
+{#                </table>#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{#    </div> <!-- container 结束 -->#}
+{##}
 
     <!-- 模态框（Modal）新增/修改工作经历 -->
     <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-hidden="true">
@@ -363,31 +400,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">新增/修改 工作经历</h4>
+                    <h4 class="modal-title">新增/修改 职位信息</h4>
                 </div>
                 <div class="modal-body">
 
                     <form role="form" id="form_am">
-
-                        <div class="form-group">
-                            <label>公司</label>
-                            <input type="text" class="form-control" name="company_name" placeholder="请输入公司名称">
-                        </div>
-
-                        <div class="form-group">
-                            <label>行业</label>
-                            <input type="text" class="form-control" name="company_industry" placeholder="请输入公司行业">
-                        </div>
-
-                        <div class="form-group">
-                            <label>入职时间</label>
-                            <input type="text" class="form-control" name="entry_time" placeholder="请输入入职时间 YYYY-MM">
-                        </div>
-
-                        <div class="form-group">
-                            <label>离职时间</label>
-                            <input type="text" class="form-control" name="departure_time" placeholder="请输入离职时间 YYYY-MM">
-                        </div>
 
                         <div class="form-group">
                             <label>职位名称</label>
@@ -395,16 +412,26 @@
                         </div>
 
                         <div class="form-group">
-                            <label>所属部门</label>
-                            <input type="text" class="form-control" name="department" placeholder="请输入所属部门">
+                            <label>学历要求</label>
+                            <input type="text" class="form-control" name="education_requirements" placeholder="请输入学历要求">
                         </div>
 
                         <div class="form-group">
-                            <label>工作内容</label>
-                            <textarea class="form-control" name="job_content" placeholder="请简述工作内容" style="resize: none;height:150px;"></textarea>
+                            <label>工作城市</label>
+                            <input type="text" class="form-control" name="work_city" placeholder="请输入工作城市">
                         </div>
 
-                        <input type="hidden" name="we_id" value="0"/>
+                        <div class="form-group">
+                            <label>薪资范围</label>
+                            <input type="text" class="form-control" name="salary_range" placeholder="请输入薪资范围">
+                        </div>
+
+                        <div class="form-group">
+                            <label>职位要求/简述</label>
+                            <textarea class="form-control" name="job_description" placeholder="请简述要求/工作内容" style="resize: none;height:150px;"></textarea>
+                        </div>
+
+                        <input type="hidden" name="job_id" value="0"/>
 
 
                     </form>
