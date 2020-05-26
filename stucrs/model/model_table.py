@@ -19,7 +19,8 @@ from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 # 创建引擎
 conn_str = "mysql+pymysql://{user}:{pwd}@localhost:3306/{db_name}?charset=utf8mb4"
 connect_info = conn_str.format(user="root",
-                               pwd="rootpwd",
+                               # pwd="rootpwd", # 本地
+                               pwd="Woshinidie123.", # 远程
                                db_name="recruitment_s")
 
 ENGINE = create_engine(connect_info,
@@ -333,3 +334,5 @@ def create_WorkExperience():
     session.close()
     print("创建工作经历完成")
 # create_WorkExperience()
+
+create_db()

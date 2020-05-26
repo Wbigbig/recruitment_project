@@ -265,4 +265,4 @@ def get_position_by_page(page, pagesize, pagetotal):
 
 # drop_db_one(RecruiterCompany)
 # drop_db()
-# create_db()
+create_db()
