@@ -72,7 +72,7 @@
                     </tbody>
                 </table>
                 <!-- 翻页，靠右，必须有页码的时候 -->
-                <ul class="pagination">
+                <ul class="pagination" style="float: right;">
                     <li><a href="javascript:;" onclick="changePage(1)" data-toggle="tooltip" title="首页">&laquo;</a></li>
                     {% for pageno in companys_data.data.pagenumbers %}
                         <li {% if pageno==companys_data.search_param.page %} class="active" {% endif %}><a href="javascript:;" onclick="changePage({{ pageno }})">{{ pageno }}</a></li>
