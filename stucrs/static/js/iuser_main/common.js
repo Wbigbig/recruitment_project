@@ -156,3 +156,13 @@ var heart_remove = function(job_id){
 		$('#form_search').get(0).submit();
 	});
 };
+
+// 接收简历
+var receive = function (dev_id) {
+    alert("开发中。。。");
+};
+
+// 打回简历
+var repulse = function (dev_id) {
+    alert("开发中。。。");
+};

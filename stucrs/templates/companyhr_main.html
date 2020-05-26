@@ -261,8 +261,10 @@
                             {% if rec.data==1 %}
                                 {% if rec.status==0 %}
                                     <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
-                                    <span name="{{ rec.delivery_id }}">接收</span>
-                                    <span name="{{ rec.delivery_id }}">打回</span>
+                                    <span>
+                                        <button class="btn btn-info" onclick="receive({{ rec.delivery_id }})">接收</button>
+                                        <button class="btn btn-info" onclick="repulse({{ rec.delivery_id }})">打回</button>
+                                    </span>
                                 {% elif rec.status==1 %}
                                     <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
                                     <span>已接收</span>
