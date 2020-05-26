@@ -111,10 +111,7 @@ def work_experience_info():
 @iuser.route('/work_experience_save',methods=['POST'])
 @login_required
 def work_experience_save():
-	print(request.form)
-	print(request.form.__dict__)
-	print(request.form.to_dict())
-	form_data = dict(request.form)
+	form_data = request.form.to_dict()	# 服务器中dict()不能转换为字典，须使用to_dict()
 	print("更新或保存用户工作经历:",form_data)
 	return save_work_experience(current_user, form_data)
 
