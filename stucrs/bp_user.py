@@ -119,14 +119,14 @@ def work_experience_save():
 @iuser.route('/work_experience_remove',methods=['POST'])
 @login_required
 def work_experience_remove():
-	form_data = dict(request.form)
+	form_data = request.form.to_dict()
 	return remove_work_experience(current_user, form_data)
 
 # 删除用户收藏
 @iuser.route('/position_heart_remove',methods=['POST'])
 @login_required
 def position_heart_remove():
-	form_data = dict(request.form)
+	form_data = request.form.to_dict()
 	return remove_position_heart(current_user, form_data)
 
 

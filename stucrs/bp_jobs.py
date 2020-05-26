@@ -56,7 +56,7 @@ def delivery():
 		redirect_url = url_for('iuser.login') + "?next=" + request.referrer
 		print(redirect_url)
 		return dRet(302, redirect_url)
-	delivery_param = dict(request.form)
+	delivery_param = request.form.to_dict()
 	return delivery_by_job_id(current_user, delivery_param)
 
 # 收藏职位
@@ -65,7 +65,7 @@ def heart():
 	if not hasattr(current_user, 'user_id') or not current_user.user_id:
 		print("未登陆")
 		return dRet(500, "请先登录")
-	heart_param = dict(request.form)
+	heart_param = request.form.to_dict()
 	return heart_by_job_id(current_user, heart_param)
 
 # 职位详情
