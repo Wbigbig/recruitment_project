@@ -64,8 +64,7 @@ class User(UserMixin):
             for k, v in vars(pe_user).items():
                 setattr(self, k, getattr(pe_user, k))   # 密码正确，重置用户信息
             setattr(self, "id", self.user_id if self.u_type == 0 else f'hr{self.hr_id}')           # 设置实例id，用户login_user需要使用
-            for k, v in vars(self).items():
-                print(k, v)
+            print(self.__dict__)
             return True
         return
 

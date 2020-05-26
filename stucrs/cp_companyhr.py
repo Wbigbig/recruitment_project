@@ -17,6 +17,8 @@ companyhr = Blueprint('companyhr',__name__)
 @companyhr.route('/main/', methods=['GET'])
 @login_required
 def main():
+    # 防止不同类型用户交叉访问页面
+    if current_user.u_type == 0:return redirect(url_for("iuser.main"))
     # 公司Hr主页, 个人信息
     session = Session()
     current_user.company_name = session.query(RecruiterCompany.company_name).filter(RecruiterCompany.company_id == current_user.company_id).first()[0]

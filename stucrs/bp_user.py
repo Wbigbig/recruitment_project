@@ -50,6 +50,8 @@ def logout():
 def main():
 	# 个人中心
 	if request.method == 'GET':
+		# 防止不同类型用户交叉访问页面
+		if current_user.u_type == 1:return redirect(url_for("companyhr.main"))
 		# 获取用户信息
 		iu = {
 			"user_id": current_user.user_id,
