@@ -185,6 +185,8 @@ def get_delivery_record(current_user):
                 "state": "-",
                 "data": 1
             }
+            if not t_rec['education_requirements']:
+                t_rec['education_requirements'] = "不限学历"
             delivery_record_list.append(t_rec)
         # 不足10条补齐10条
         if len(records) < 10:
@@ -261,6 +263,8 @@ def get_hr_recruitment_position(current_user):
             t_pos = {k: v for (k, v) in vars(position).items()}
             t_pos['create_time'] = t_pos['create_time'].strftime("%Y-%m-%d")
             t_pos['last_update_time'] = t_pos['last_update_time'].strftime("%Y-%m-%d") if t_pos['last_update_time'] else t_pos['last_update_time']
+            if not t_pos['education_requirements']:
+                t_pos['education_requirements'] = "暂未填写"
             # del t_pos['_sa_instance_state']
             ret_position_list.append(t_pos)
         return dRet(200, ret_position_list)
@@ -643,6 +647,8 @@ def search_job_details_by_job_id(job_id):
         hr_dict[k] = v
     for k,v in vars(company).items():
         company_dict[k] = v
+    if not position_dict['education_requirements']:
+        position_dict['education_requirements'] = "不限学历"
     ret = {
         "position": position_dict,
         "hr": hr_dict,
@@ -662,6 +668,8 @@ def search_company_details_by_company_id(company_id):
     for position in company.rec_pos:
         t_pos_dict = {k:v for (k,v) in vars(position).items()}
         t_pos_dict['create_time'] = t_pos_dict['create_time'].strftime('%Y-%m-%d')
+        if not t_pos_dict['education_requirements']:
+            t_pos_dict['education_requirements'] = "不限学历"
         position_list.append(t_pos_dict)
     company_dict['position_list'] = position_list
     return dRet(200, company_dict)
