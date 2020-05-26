@@ -332,7 +332,7 @@ def save_work_experience(current_user, form_data):
                 return dRet(200, "修改成功")
             return eq_ret
         print("执行新增工作经历操作", current_user.user_id, form_data)
-        form_data['we_id'] = int(form_data['we_id'])
+        form_data.pop('we_id')
         form_data['user_id'] = current_user.user_id
         print(form_data)
         session.add(WorkExperience(**form_data))
@@ -359,6 +359,15 @@ def save_position_info(current_user, form_data):
                 session.close()
                 return dRet(200, "修改成功")
             return dRet(500, "归属异常")
+        print("执行新增职位信息操作", current_user.hr_id, form_data)
+        form_data.pop("job_id")
+        form_data['hr_id'] = current_user.hr_id
+        form_data['company_id'] = current_user.company_id
+        print(form_data)
+        session.add(RecruitmentPosition(**form_data))
+        session.commit()
+        session.close()
+        return dRet(200, "新增成功")
     except:
         print(traceback.format_exc())
         return dRet(500, "修改或保存职位信息异常")
@@ -380,6 +389,26 @@ def remove_work_experience(current_user, form_data):
     except:
         print(traceback.format_exc())
         return dRet(500, "删除工作经历异常")
+
+# 删除职位信息
+def remove_position_info(current_user, form_data):
+    try:
+        session = Session()
+        print("执行删除职位信息操作", current_user.hr_id, form_data)
+        # 判断该职位是否归属当前用户
+        eq_ret = filter_from_model_by_kw(RecruitmentPosition, hr_id=current_user.hr_id, job_id=int(form_data['job_id']))
+        if eq_ret:
+            # 先删除外键记录 投递记录表
+            session.query(DeliveryRecord).filter(DeliveryRecord.job_id==int(form_data['job_id'])).delete()
+            # 删除职位信息
+            session.query(RecruitmentPosition).filter(RecruitmentPosition.job_id==int(form_data['job_id'])).delete()
+            session.commit()
+            session.close()
+            return dRet(200, "删除成功")
+        return eq_ret
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "删除职位信息异常")
 
 # 删除用户收藏
 def remove_position_heart(current_user, form_data):

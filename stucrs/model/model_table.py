@@ -243,6 +243,14 @@ def create_RecruiterCompany(company_info):
     print("创建公司完成")
 # create_RecruiterCompany()
 
+# 更新公司信息
+def update_recruitercompany(company_info):
+    session = Session()
+    session.query(RecruiterCompany).filter(RecruiterCompany.company_id==company_info['company_id']).update(company_info)
+    session.commit()
+    # session.close()
+    print("公司更新完成")
+
 # 创建招聘者
 def create_RecruiterHr(hr_info):
     # hr_info = {

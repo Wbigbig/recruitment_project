@@ -78,35 +78,6 @@ var save = function(){
 	var data = jqu.formData('form_am');
 	// alert(jqu.obj2json(data));
 	// 进行必填项的判断
-	// if(data.company_name===''){
-	// 	alert('公司 必须填写');
-	// 	return;
-	// }
-	// if(data.company_industry===''){
-	// 	alert('行业 必须填写');
-	// 	return;
-	// }
-	// if(data.entry_time===''){
-	// 	alert('入职时间 必须填写');
-	// 	return;
-	// }
-	// if(data.departure_time===''){
-	// 	alert('离职时间 必须填写');
-	// 	return;
-	// }
-	// if(data.job_title===''){
-	// 	alert('职位名称 必须填写');
-	// 	return;
-	// }
-	// if(data.department===''){
-	// 	alert('所属部门 必须填写');
-	// 	return;
-	// }
-	// if(data.job_content===''){
-	// 	alert('工作内容 必须填写');
-	// 	return;
-	// }
-
 	for (var key in data){
 		if (data[key] === ''){
 			alert('请检查表单信息不为空');
@@ -134,24 +105,40 @@ var save = function(){
 			return;
 		}
 		//保存成功，刷新页面
-		alert('保存成功');
+		// alert('保存成功');
+		alert(result.data);
 		$('#form_search').get(0).submit();
 	});
 	
 };
 
-// 删除
-var remove = function(we_id){
+// 删除用户经历或 公司职位
+var remove = function(_id){
 	if(!confirm('确实要删除该记录吗？'))
 		return;
-	thisUrl = main_route + '/work_experience_remove';
-	jqu.loadJson(thisUrl,{we_id:we_id},function(result){
+
+	var thisUrl = null;
+	var data = {};
+	if(main_route == "/iuser"){
+		thisUrl = main_route + '/work_experience_remove';
+		data = {
+			"we_id": _id
+		};
+	}
+	if(main_route == "/companyhr"){
+		thisUrl = main_route + '/position_info_remove';
+		data = {
+			"job_id": _id
+		};
+	}
+
+	jqu.loadJson(thisUrl, data,function(result){
 		if(result.status === 500){
 			alert(result.msg);
 			return;
 		}
-		
-		alert('删除成功');
+		alert(result.data);
+		// alert('删除成功');
 		$('#form_search').get(0).submit();
 	});
 };

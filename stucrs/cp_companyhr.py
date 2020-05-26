@@ -50,3 +50,9 @@ def position_info_save():
     return save_position_info(current_user, form_data)
 
 # 删除职位信息
+@companyhr.route('/position_info_remove',methods=['POST'])
+@login_required
+def position_info_remove():
+    form_data = dict(request.form)
+    print("删除职位信息", form_data)
+    return remove_position_info(current_user, form_data)

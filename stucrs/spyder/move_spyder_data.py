@@ -9,7 +9,8 @@
 from stucrs.model.spyder_model import get_total_ptotal_from_spyderCompany, get_spyder_company_by_page, \
     get_total_ptotal_from_postiton, get_position_by_page
 from stucrs.model import create_RecruiterCompany, get_total_ptotal_from_RecruiterCompany, get_company_by_page, \
-    create_RecruiterHr, search_hr_id_by_company_id,create_RecruitmentPosition,filter_from_model_by_kw,RecruiterCompany,RecruiterHr
+    create_RecruiterHr, search_hr_id_by_company_id,create_RecruitmentPosition,filter_from_model_by_kw,RecruiterCompany,RecruiterHr,update_recruitercompany,\
+    Session,RecruitmentPosition
 
 
 # 转移公司数据
@@ -33,6 +34,28 @@ def move_spydercompany_to_company():
             create_RecruiterCompany(company_info)
             n += 1
             print(n)
+
+# 更新公司数据
+def update_company_from_spydercompany():
+    total, pagetotal = get_total_ptotal_from_spyderCompany(500)
+    n = 0
+    for i in range(1, pagetotal + 1):
+        get_company_list = get_spyder_company_by_page(i, 500, pagetotal)
+        for company in get_company_list:
+            if filter_from_model_by_kw(RecruiterCompany, company_id=company.company_id):
+                company_info = {
+                    "company_id": company.company_id,
+                    "company_name": company.company_name,
+                    "company_industry": company.company_industry,
+                    "address": company.address,
+                    "company_profile": company.company_profile,
+                    "company_pic": company.company_pic,
+                    "company_type": company.company_tag
+                }
+                update_recruitercompany(company_info)
+                n += 1
+                print(n)
+# update_company_from_spydercompany()
 
 # move_spydercompany_to_company()
 
@@ -92,4 +115,17 @@ def move_spyderposition_to_position():
             print(n)
         create_RecruitmentPosition(add_list)
 
-move_spyderposition_to_position()
+# move_spyderposition_to_position()
+
+# # 更新转移职位数据
+# def move_spyderderposition_to_position():
+#     total, pagetotal = get_total_ptotal_from_postiton(500)
+#     n = 0
+#     for i in range(1, pagetotal + 1):
+#         get_job_list = get_position_by_page(i, 500, pagetotal)
+#         add_list = []
+#         for job in get_job_list:
+#             n+=1
+#             session = Session()
+#             # 查找是否有该职位
+#             position = session.query(RecruitmentPosition).filter(RecruitmentPosition.job_id==)

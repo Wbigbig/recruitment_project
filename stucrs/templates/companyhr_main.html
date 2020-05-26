@@ -314,6 +314,7 @@
                         <th>职位名称</th>
                         <th>学历要求</th>
                         <th>工作城市</th>
+                        <th>工作地址</th>
                         <th>薪资范围</th>
                         <th width="45%">职位要求/简述</th>
                         <th width="150">操作</th>
@@ -325,6 +326,7 @@
                             <td>{{ position.job_title }}</td>
                             <td>{{ position.education_requirements }}</td>
                             <td>{{ position.work_city }}</td>
+                            <td>{{ position.work_address }}</td>
                             <td>{{ position.salary_range }}</td>
                             <td style="word-wrap:break-word;word-break:break-all;white-space: pre-line;">{{ position.job_description }}</td>
                             <td>
@@ -419,6 +421,11 @@
                         <div class="form-group">
                             <label>工作城市</label>
                             <input type="text" class="form-control" name="work_city" placeholder="请输入工作城市">
+                        </div>
+
+                        <div class="form-group">
+                            <label>工作地点</label>
+                            <input type="text" class="form-control" name="work_address" placeholder="请输入工作详细地址">
                         </div>
 
                         <div class="form-group">

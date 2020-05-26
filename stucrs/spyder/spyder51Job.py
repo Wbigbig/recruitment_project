@@ -8,7 +8,7 @@ import requests
 import re
 from pyquery import PyQuery as pq
 from stucrs.model.spyder_model import insertSearchMain, get_total_ptotal_from_searchmain, get_search_main_by_page, search_or_create_spydercompany, add_spyderCompany, search_job_from_spydercompany, \
-    update_spyderSearchMain_company_jobinfo_id, add_spyderRecruitmentPosition
+    update_spyderSearchMain_company_jobinfo_id, add_spyderRecruitmentPosition, get_total_ptotal_from_postiton, get_position_by_page, Session, spyderRecruitmentPosition
 import traceback
 
 # 爬取51 job 首层职位搜索信息入库
@@ -166,6 +166,27 @@ def spyder51JobInfoInsertDB():
                     update_spyderSearchMain_company_jobinfo_id(job, "jobinfo_id")
                 # 其他异常不处理
 
+# 更新职位信息入爬虫库
+def update51JobInfoInsertDB():
+    total, pagetotal = get_total_ptotal_from_postiton(500)
+    for i in range(1, pagetotal+1):
+        n = 0
+        get_job_list = get_position_by_page(i, 500, pagetotal)
+        for job in get_job_list:
+            n += 1
+            print("第%s页 第%s条 总%s页 已处理%s" % (str(i), str(n), str(pagetotal), str((i - 1) * 500 + n - 1)))
+            if job.job_link:
+                job_info_dict = spyder51JobInfoMain(job)
+                if not job_info_dict:
+                    continue
+                # 更新职位信息
+                session = Session()
+                session.query(spyderRecruitmentPosition).filter(spyderRecruitmentPosition.job_id==job.job_id).update(job_info_dict)
+                session.commit()
+                # session.close()
+
+
+
 # 爬取职位信息主程序
 def spyder51JobInfoMain(job):
     try:
@@ -189,23 +210,39 @@ def spyder51JobInfoMain(job):
         box2 = doc("div.tCompany_main").children(".tBorderTop_box:nth-child(2)")
         address = None if box2.children("h2").text() != "联系方式" else box2.children("div p.fp").text().replace("上班地址：", "")
         job_info = {
-            "company_id": job.company_id,
-            "job_title": job.job_name,
+            # "company_id": job.company_id,
+            # "job_title": job.job_name,
             "work_province": "广东",
-            "work_city": job.work_place,
+            # "work_city": job.work_place,
             "work_address": address,
-            "work_experience_requirements": tags[1],
-            "education_requirements": tags[2],
-            "salary_range": job.salary,
+            "work_experience_requirements": get_tags(1, tags),
+            "education_requirements": get_tags(2, tags),
+            # "salary_range": job.salary,
             "job_description": doc("div.bmsg.job_msg.inbox").text(),
-            "job_persion_requirements": tags[3],
-            "job_puttime": job.puttime,
-            "job_link": job.job_link
+            "job_persion_requirements": get_tags(3, tags),
+            # "job_puttime": job.puttime,
+            # "job_link": job.job_link
         }
         return job_info
     except:
         print(traceback.format_exc())
         return None
+
+def get_tags(n, tags):
+    for tag in tags:
+        if n == 1:  # 经验要求
+            if "经验" in tag:
+                return tag
+            continue
+        if n == 2: # 学历要求
+            if tag in ['高中','大专','本科','研究生','博士','初中及以下','中专']:
+                return tag
+            continue
+        if n == 3: # 招多少人
+            if "人" in tag:
+                return tag
+            continue
+    return
 
 
 if __name__ == '__main__':
@@ -216,4 +253,5 @@ if __name__ == '__main__':
     # spyder51CompanyInsertDB()
     # pprint.pprint(spyder51JobInfoMain("1"))
     # spyder51JobInfoInsertDB()
+    # update51JobInfoInsertDB()
     pass
