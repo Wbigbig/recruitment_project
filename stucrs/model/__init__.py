@@ -12,6 +12,22 @@ from .model_table import *  #导入model_table的所有模块
 from stucrs.project_utils import dRet  #在stucrs.project_utils导入dRet模块，这个是自定义返回信息的
 
 import traceback  #异常信息模块
+from contextlib import contextmanager
+
+# 使用上下文管理器分离session
+@contextmanager
+def session_scope():
+    """Provide a transactional scope around a series of operations."""
+    session = Session()
+    print(f'上下文Session：{id(session)}')
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
 
 # 用户注册操作
 def create_applicant_user(register_param, model):

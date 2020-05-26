@@ -6,7 +6,7 @@
 
 from flask import Blueprint,request,render_template,url_for
 from flask_login import current_user
-from stucrs.model import Session
+from stucrs.model import Session, session_scope
 
 from stucrs.model import search_company_list, search_company_details_by_company_id
 from .project_utils import dRet
@@ -39,13 +39,13 @@ def list():
 		form_data['pagesize'] = int(form_data['pagesize'])
 	except:
 		form_data['pagesize'] = 20
-	session = Session()
-	print(f'sessionid:{id(session)}')
-	# 查询数据
-	companys_data = search_company_list(current_user, form_data)
-	# import pprint
-	# pprint.pprint(companys_data)
-	return render_template('tcompany_list.html', companys_data=companys_data)
+
+	with session_scope() as session:
+		# 查询数据
+		companys_data = search_company_list(current_user, form_data)
+		# import pprint
+		# pprint.pprint(companys_data)
+		return render_template('tcompany_list.html', companys_data=companys_data)
 
 # 根据公司id显示公司详情页面
 @companys.route('/details',methods=['GET'])
@@ -53,6 +53,7 @@ def details():
 	company_id = int(request.args.get('id'))
 	print("获取公司详情：", company_id)
 	if company_id:
-		ret = search_company_details_by_company_id(company_id)
-		return render_template('tcompany_detail.html', data=ret.get('data'))
+		with session_scope() as session:
+			ret = search_company_details_by_company_id(company_id)
+			return render_template('tcompany_detail.html', data=ret.get('data'))
 	return None
