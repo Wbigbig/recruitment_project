@@ -182,7 +182,8 @@ def get_delivery_record(current_user):
                 "work_address": record.recruitment_position.work_address,
                 "delivery_time": record.delivery_time.strftime("%Y-%m-%d %H:%M:%S"),
                 "hr_real_name": record.recruiter_hr.real_name,
-                "state": "-",
+                "status": record.status,
+                "ret_comment": record.ret_comment,
                 "data": 1
             }
             if not t_rec['education_requirements']:
@@ -200,7 +201,8 @@ def get_delivery_record(current_user):
                 "work_address": "-",
                 "delivery_time": "-",
                 "hr_real_name": "-",
-                "state": "-",
+                "status": 0,
+                "ret_comment": "-",
                 "data": 0
             })
         session.close()
@@ -595,6 +597,34 @@ def delivery_by_job_id(current_user, form_data):
     except:
         print(traceback.format_exc())
         return dRet(500, "投递异常")
+
+# 接收或打回投递操作
+def receive_or_repulse_delivery_recore(current_user, form_data, type):
+    """
+    接收或打回
+    :param current_user:
+    :param form_data:
+    :param type:1 接收 2 打回
+    :return:
+    """
+    if type not in [1,2]:
+        return dRet(500, "类型错误")
+    try:
+        # 查询该投递信息归属
+        eq_ret = filter_from_model_by_kw(DeliveryRecord, hr_id=current_user.hr_id, delivery_id=int(form_data['delivery_id']))
+        if eq_ret:
+            # form_data.pop('delivery_id')
+            form_data['status'] = type
+            session = Session()
+            session.query(DeliveryRecord).filter(DeliveryRecord.hr_id==current_user.hr_id, DeliveryRecord.delivery_id==int(form_data['delivery_id'])).update(form_data)
+            if type == 1:
+                return dRet(200, "接收完成")
+            else:
+                return dRet(200, "已打回")
+        dRet(500, "归属异常")
+    except:
+        print(traceback.format_exc())
+        return dRet(500, "接收打回异常")
 
 # 进行收藏操作
 def heart_by_job_id(current_user, form_data):

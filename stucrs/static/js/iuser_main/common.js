@@ -1,5 +1,6 @@
 // 固定路由
 // var main_route = '/iuser';
+var companyhr_route = '/companyhr';
 
 // 重置个人中心链接
 $('#main_href').attr('href', main_route + "/main");
@@ -158,11 +159,71 @@ var heart_remove = function(job_id){
 };
 
 // 接收简历
-var receive = function (dev_id) {
-    alert("开发中。。。");
+var receive = {
+    leave_msg: function (dev_id) {
+        $('#modal2').modal('show').on('shown.bs.modal', function (e) {
+            // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零
+            $(this).css('display', 'block');
+            var modalHeight=$(window).height() / 2 - $('#modal2 .modal-dialog').height() / 2;
+            $(this).find('.modal-dialog').css({
+                'margin-top': modalHeight
+            });
+            // 设置delivery_id
+            $(this).find('input[name="delivery_id"]').val(dev_id);
+            // 设置提交
+            $(this).find('button[class="btn btn-primary"]').attr("onclick", "receive.receive_do()");
+        });
+    },
+    receive_do: function () {
+        var data = jqu.formData('form_am2');
+        var thisUrl = companyhr_route + '/receive';
+
+        // alert(jqu.obj2json(data));
+        //提交数据进行接收留言
+        jqu.loadJson(thisUrl,data,function(result){
+            if(result.status === 500){
+                alert(result.msg);
+                return;
+            }
+            //保存成功，刷新页面
+            // alert('保存成功');
+            alert(result.data);
+            $('#form_search').get(0).submit();
+        });
+    }
 };
 
 // 打回简历
-var repulse = function (dev_id) {
-    alert("开发中。。。");
+var repulse = {
+    leave_msg: function (dev_id) {
+        $('#modal2').modal('show').on('shown.bs.modal', function (e) {
+            // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零
+            $(this).css('display', 'block');
+            var modalHeight=$(window).height() / 2 - $('#modal2 .modal-dialog').height() / 2;
+            $(this).find('.modal-dialog').css({
+                'margin-top': modalHeight
+            });
+            // 设置delivery_id
+            $(this).find('input[name="delivery_id"]').val(dev_id);
+            // 设置提交
+            $(this).find('button[class="btn btn-primary"]').attr("onclick", "repulse.repulse_do()");
+        });
+    },
+    repulse_do: function () {
+        var data = jqu.formData('form_am2');
+        var thisUrl = companyhr_route + '/repulse';
+
+        // alert(jqu.obj2json(data));
+        //提交数据进行接收留言
+        jqu.loadJson(thisUrl,data,function(result){
+            if(result.status === 500){
+                alert(result.msg);
+                return;
+            }
+            //保存成功，刷新页面
+            // alert('保存成功');
+            alert(result.data);
+            $('#form_search').get(0).submit();
+        });
+    }
 };

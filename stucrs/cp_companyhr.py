@@ -60,3 +60,22 @@ def position_info_remove():
     print("删除职位信息", form_data)
     with session_scope() as session:
         return remove_position_info(current_user, form_data)
+
+# 主动接收投递信息
+@companyhr.route('/receive',methods=['POST'])
+@login_required
+def receive():
+    form_data = request.form.to_dict()
+    print("主动接收投递信息", form_data)
+    with session_scope() as session:
+        return receive_or_repulse_delivery_recore(current_user, form_data, 1)
+
+# 主动打回投递信息
+@companyhr.route('/repulse',methods=['POST'])
+@login_required
+def repulse():
+    form_data = request.form.to_dict()
+    print("主动打回投递信息", form_data)
+    with session_scope() as session:
+        return receive_or_repulse_delivery_recore(current_user, form_data, 2)
+

@@ -57,3 +57,4 @@ def details():
 			ret = search_company_details_by_company_id(company_id)
 			return render_template('tcompany_detail.html', data=ret.get('data'))
 	return None
+

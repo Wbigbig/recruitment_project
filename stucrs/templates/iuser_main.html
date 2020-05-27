@@ -242,12 +242,22 @@
                     {% for rec in iu_delivery_record %}
                         <td>
                             {% if rec.data==1 %}
-                                <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                                 {% if rec.status==0 or not rec.status %}
+                                    <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                                    <p>待企业接收</p>
+                                 {% elif rec.status==1 %}
+                                    <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                                    <p>已接收</p>
+                                    <span>{{ rec.ret_comment }}</span>
+                                 {% else %}
+                                    <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                                    <p>已拒绝</p>
+                                    <span>{{ rec.ret_comment }}</span>
+                                 {% endif %}
                             {% else %}
                                 <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
+                                <span>-</span>
                             {% endif %}
-                            {#                    <p>1GB *</p>#}
-                            <span>{{ rec.state }}</span>
                         </td>
                     {% endfor %}
                 </tr>
