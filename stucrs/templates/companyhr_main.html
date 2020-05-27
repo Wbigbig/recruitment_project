@@ -261,16 +261,19 @@
                             {% if rec.data==1 %}
                                 {% if rec.status==0 %}
                                     <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
+                                    <p>未处理</p>
                                     <span>
                                         <button class="btn btn-info" onclick="receive.leave_msg({{ rec.delivery_id }})">接收</button>
                                         <button class="btn btn-info" onclick="repulse.leave_msg({{ rec.delivery_id }})">打回</button>
                                     </span>
                                 {% elif rec.status==1 %}
                                     <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
-                                    <span>已接收</span>
+                                    <p>已接收</p>
+                                    <span>{{ rec.ret_comment }}</span>
                                 {% else %}
                                     <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
-                                    <span>已打回</span>
+                                    <p>已打回</p>
+                                    <span>{{ rec.ret_comment }}</span>
                                 {% endif %}
                             {% else %}
                                 <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
