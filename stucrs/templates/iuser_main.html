@@ -248,11 +248,11 @@
                                  {% elif rec.status==1 %}
                                     <img src="/img/iuser_main/iu_delivery/icon-correct.png" class="correct" alt=""/>
                                     <p>已接收</p>
-                                    <span>{{ rec.ret_comment }}</span>
+                                    <span>{{ rec.ret_comment|replace('\n','<br>')|safe }}</span>
                                  {% else %}
                                     <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
                                     <p>已拒绝</p>
-                                    <span>{{ rec.ret_comment }}</span>
+                                    <span>{{ rec.ret_comment|replace('\n','<br>')|safe }}</span>
                                  {% endif %}
                             {% else %}
                                 <img src="/img/iuser_main/iu_delivery/icon-close.png" class="close" alt=""/>
