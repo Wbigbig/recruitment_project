@@ -6,6 +6,7 @@
 
 from flask import Flask
 from flask_login import LoginManager
+from datetime import timedelta
 
 from .project_utils import get_project_dir
 
@@ -48,6 +49,10 @@ def create_app():
 
     # 设置密钥 生成session
     app.config['SECRET_KEY'] = project_config['SECRET_KEY']
+
+    # 模板热更新
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)
 
     # 配置蓝图
     app.register_blueprint(blueprint=main)
