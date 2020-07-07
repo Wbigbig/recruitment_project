@@ -47,7 +47,7 @@ def position_info():
 @companyhr.route('/position_info_save',methods=['POST'])
 @login_required
 def position_info_save():
-    form_data = request.form.to_dict()
+    form_data = dict(request.form)
     print("更新或保存职位信息", form_data)
     with session_scope() as session:
         return save_position_info(current_user, form_data)
@@ -56,7 +56,7 @@ def position_info_save():
 @companyhr.route('/position_info_remove',methods=['POST'])
 @login_required
 def position_info_remove():
-    form_data = request.form.to_dict()
+    form_data = dict(request.form)
     print("删除职位信息", form_data)
     with session_scope() as session:
         return remove_position_info(current_user, form_data)

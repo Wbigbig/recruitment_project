@@ -7,7 +7,7 @@
 from flask import Blueprint,request,render_template,url_for
 from flask_login import current_user
 
-from stucrs.model import search_job_list, delivery_by_job_id, search_job_details_by_job_id, heart_by_job_id, session_scope
+from stucrs.model import search_job_list, delivery_by_job_id, search_job_details_by_job_id, heart_by_job_id
 from .project_utils import dRet
 
 jobs = Blueprint('jobs',__name__)
@@ -42,12 +42,11 @@ def list():
 	except:
 		form_data['pagesize']=20
 
-	with session_scope() as session:
-		# 查询数据
-		jobs_data = search_job_list(current_user, form_data)
-		# import pprint
-		# pprint.pprint(jobs_data)
-		return render_template('tjobs_list.html', jobs_data=jobs_data)
+	# 查询数据
+	jobs_data = search_job_list(current_user, form_data)
+	# import pprint
+	# pprint.pprint(jobs_data)
+	return render_template('tjobs_list.html', jobs_data=jobs_data)
 	
 # 投递信息
 @jobs.route('/delivery',methods=['POST'])
@@ -57,9 +56,8 @@ def delivery():
 		redirect_url = url_for('iuser.login') + "?next=" + request.referrer
 		print(redirect_url)
 		return dRet(302, redirect_url)
-	delivery_param = request.form.to_dict()
-	with session_scope() as session:
-		return delivery_by_job_id(current_user, delivery_param)
+	delivery_param = dict(request.form)
+	return delivery_by_job_id(current_user, delivery_param)
 
 # 收藏职位
 @jobs.route('/heart',methods=['POST'])
@@ -67,9 +65,8 @@ def heart():
 	if not hasattr(current_user, 'user_id') or not current_user.user_id:
 		print("未登陆")
 		return dRet(500, "请先登录")
-	heart_param = request.form.to_dict()
-	with session_scope() as session:
-		return heart_by_job_id(current_user, heart_param)
+	heart_param = dict(request.form)
+	return heart_by_job_id(current_user, heart_param)
 
 # 职位详情
 @jobs.route('/details/', methods=['GET'])
@@ -77,7 +74,6 @@ def details():
 	pos_id = int(request.args.get("id"))
 	print("获取职位详情：", pos_id)
 	if pos_id:
-		with session_scope() as session:
-			ret = search_job_details_by_job_id(pos_id)
-			return render_template('tjobs_detail.html', data=ret.get("data"))
+		ret = search_job_details_by_job_id(pos_id)
+		return render_template('tjobs_detail.html', data=ret.get("data"))
 	return "None"
